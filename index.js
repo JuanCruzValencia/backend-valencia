@@ -45,7 +45,9 @@ class ProductManager {
       thumnail.trim().length > 0 &&
       code.trim().length > 0 &&
       price.toString().trim().length > 0 &&
-      stock.toString().trim().length > 0
+      stock.toString().trim().length > 0 &&
+      price > 0 &&
+      stock > 0
     );
   };
 
@@ -111,7 +113,12 @@ console.log("Productos en la base de datos:", valencia.getProducts());
 console.log("-------------------------");
 console.log("-------------------------");
 console.log("-------------------------");
-valencia.addProduct("producto de prueba", "", 200, "Sin imagen", "abc123", 25);
+valencia.addProduct("producto de prueba", "Segundo producto de prueba", "", "Sin imagen", "abd123", 25);
+console.log("Productos en la base de datos:", valencia.getProducts());
+console.log("-------------------------");
+console.log("-------------------------");
+console.log("-------------------------");
+valencia.addProduct("Segundo producto de prueba", "Segundo producto de prueba", 1000, "Sin imagen", "abd123", 40);
 console.log("Productos en la base de datos:", valencia.getProducts());
 console.log("-------------------------");
 console.log("-------------------------");
