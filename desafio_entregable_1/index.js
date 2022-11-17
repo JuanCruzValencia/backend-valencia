@@ -113,16 +113,30 @@ console.log("Productos en la base de datos:", valencia.getProducts());
 console.log("-------------------------");
 console.log("-------------------------");
 console.log("-------------------------");
-valencia.addProduct("producto de prueba", "Segundo producto de prueba", "", "Sin imagen", "abd123", 25);
+valencia.addProduct(
+  "producto de prueba",
+  "Segundo producto de prueba",
+  "",
+  "Sin imagen",
+  "abd123",
+  25
+);
 console.log("Productos en la base de datos:", valencia.getProducts());
 console.log("-------------------------");
 console.log("-------------------------");
 console.log("-------------------------");
-valencia.addProduct("Segundo producto de prueba", "Segundo producto de prueba", 1000, "Sin imagen", "abd123", 40);
+valencia.addProduct(
+  "Segundo producto de prueba",
+  "Segundo producto de prueba",
+  1000,
+  "Sin imagen",
+  "abd123",
+  40
+);
 console.log("Productos en la base de datos:", valencia.getProducts());
 console.log("-------------------------");
 console.log("-------------------------");
 console.log("-------------------------");
 valencia.getProductById(45);
-valencia.getProductById(1)
+valencia.getProductById(1);
 console.log("----- fin del test -----");
