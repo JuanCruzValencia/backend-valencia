@@ -7,7 +7,7 @@ class ProductManager {
 
   constructor() {
     this.#products = [];
-    this.path = "./data/DB.js";
+    this.path = "./data/DB.json";
   }
 
   getProductId = () => {
@@ -30,12 +30,12 @@ class ProductManager {
   };
 
   verifyCode = (productCode) => {
-    const productsCopy = [...this.getProducts()];
+    const productsCopy = [...this.#products];
     const isInDb = productsCopy.some((product) => product.code === productCode);
     return isInDb;
   };
 
-  addProduct = (title, description, price, thumbnail, code, stock) => {
+  addProduct = async (title, description, price, thumbnail, code, stock) => {
     const id = this.getProductId();
 
     const newProduct = {
@@ -54,25 +54,29 @@ class ProductManager {
       console.log("This product code already exist is the data base");
 
     this.#products.push(newProduct);
-
     // creo el archivo donde voy a guardar los datos de mi array de productos
-    fs.promises.writeFile(this.path, JSON.stringify(this.#products));
+    await fs.promises.writeFile(this.path, JSON.stringify(this.#products));
+    console.log("TEST: PRODUCTO AGREGDO CON EXITO");
   };
 
   // funcion asincrona que va a leer el archivos con mis productos
   getProducts = async () => {
     //leer la base de datos de prodcutos
-    const resolve = await fs.promises.readFile(this.path, "utf-8");
-    const products = await JSON.parse(resolve);
-    console.log(products);
-    return products;
+    try {
+      const resolve = await fs.promises.readFile(this.path, "utf-8");
+      if (resolve.length === 0) throw new Error();
+      return JSON.parse(resolve);
+    } catch (error) {
+      console.log("Array vacio");
+    }
   };
 
   // funcion para obtener los productos por el id, previamente me tengo que traer
   // los datos gurdados en mi archivo
-  getProductById = (productId) => {
-    const productsCopy = [...this.getProducts()];
-    const searchedProduct = productsCopy.find(
+  getProductById = async (productId) => {
+    const productsCopy = await fs.promises.readFile(this.path, "utf-8");
+    const productsCopyObj = JSON.parse(productsCopy);
+    const searchedProduct = productsCopyObj.find(
       (product) => product.id === productId
     );
     return searchedProduct !== undefined
@@ -92,7 +96,7 @@ class ProductManager {
 
   // funcion para eliminar prodcutos de mi archivo
   deleteProduct = async (productId) => {
-    const productsCopy = [...this.getProducts()];
+    const productsCopy = [...this.#products];
     const filteredProducts = productsCopy.filter(
       (product) => product.id !== productId
     );
@@ -100,4 +104,34 @@ class ProductManager {
   };
 }
 
-//hacer pruebas y enviar
+// TESTS
+
+// Creando una instancia de la clase Product Manager
+const valencia = new ProductManager();
+
+// Se invoca a getProducts() devuelve productos | error y mensaje
+valencia
+  .getProducts()
+  .then((products) =>
+    console.log(`Primer test: ${products ? products : "NO HAY PRODUCTOS"}`)
+  );
+
+// Se agrega un nuevo producto
+
+valencia
+  .addProduct(
+    "Producto de prueba",
+    "Este es un producto de prueba",
+    250,
+    "No hay imagen",
+    "abc123",
+    50
+  )
+  .then(() => {
+    // Se invoca a getProducts() nuevamente con el prodcuto ya ingresado en el array
+    valencia
+      .getProducts()
+      .then((products) =>
+        console.log(`Segundo test: ${products ? products : "NO HAY PRODUCTOS"}`)
+      );
+  });
