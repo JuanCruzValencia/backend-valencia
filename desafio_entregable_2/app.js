@@ -1,11 +1,13 @@
+// guardo en una variable el modulo file system
 const fs = require("fs");
 
+// Uso de estructura el desafio anterior
 class ProductManager {
   #products;
 
   constructor() {
     this.#products = [];
-    this.path = "./data/dbTest.js";
+    this.path = "./data/DB.js";
   }
 
   getProductId = () => {
@@ -53,17 +55,21 @@ class ProductManager {
 
     this.#products.push(newProduct);
 
-    // guardo en mi base de datos el array
+    // creo el archivo donde voy a guardar los datos de mi array de productos
     fs.promises.writeFile(this.path, JSON.stringify(this.#products));
   };
 
+  // funcion asincrona que va a leer el archivos con mis productos
   getProducts = async () => {
     //leer la base de datos de prodcutos
     const resolve = await fs.promises.readFile(this.path, "utf-8");
-    const products = JSON.parse(resolve);
+    const products = await JSON.parse(resolve);
+    console.log(products);
     return products;
   };
 
+  // funcion para obtener los productos por el id, previamente me tengo que traer
+  // los datos gurdados en mi archivo
   getProductById = (productId) => {
     const productsCopy = [...this.getProducts()];
     const searchedProduct = productsCopy.find(
@@ -74,17 +80,24 @@ class ProductManager {
       : console.log("NOT FOUND");
   };
 
-  updateProduct = (updatedProduct) => {
-    const productsCopy = [...this.getProducts()];
-    const productToUpdate = this.getProductById(updatedProduct.id);
-
+  // funcion para actualizar productos de mi archivo
+  updateProduct = async (updatedProduct) => {
+    // primero elimino el producto anterior con el id de mi producto actualizado
+    this.deleteProduct(updatedProduct.id);
+    // despues guardo mi nuevo producto en mi array
+    const updatedArray = this.#products.push(updatedProduct);
+    // sobre escribo mi archivo con mi producto actualizado
+    await fs.promises.writeFile(this.path, JSON.stringify(updatedArray));
   };
 
-  deleteProduct = (productId) => {
+  // funcion para eliminar prodcutos de mi archivo
+  deleteProduct = async (productId) => {
     const productsCopy = [...this.getProducts()];
     const filteredProducts = productsCopy.filter(
       (product) => product.id !== productId
     );
-    fs.promises.writeFile(this.path, JSON.stringify(filteredProducts));
+    await fs.promises.writeFile(this.path, JSON.stringify(filteredProducts));
   };
 }
+
+//hacer pruebas y enviar
