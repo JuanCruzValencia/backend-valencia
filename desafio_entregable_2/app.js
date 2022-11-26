@@ -3,8 +3,8 @@ const fs = require("fs");
 
 // Uso de estructura el desafio anterior
 class ProductManager {
-  constructor() {
-    this.path = "./data/DB.json";
+  constructor(path) {
+    this.path = path;
   }
 
   // Modificaciones en para obtener el id del producto
@@ -57,7 +57,6 @@ class ProductManager {
       code,
       stock,
     };
-
     // verifica los campos de manera sincronica
     if (!this.validateInputs({ ...newProduct })) {
       console.log("Please fill all the inputs");
@@ -67,7 +66,6 @@ class ProductManager {
     if (codeIsVerify) {
       console.log("This product code already exist is the data base");
     }
-
     // creo el archivo donde voy a guardar los datos de mi array de productos
     await fs.promises.writeFile(this.path, JSON.stringify([newProduct]));
     console.log("TEST: PRODUCTO AGREGDO CON EXITO");
@@ -79,14 +77,12 @@ class ProductManager {
   // y despues devuelve ese array, sino el el metodo JSON.parse devuelve un error
   // Ya que trata de convertir a string una resolucion undefined
   getProducts = async () => {
-    try {
+    if (fs.existsSync(this.path)) {
       const resolve = await fs.promises.readFile(this.path, "utf-8");
-      if (resolve.length === 0) throw new Error();
-      return resolve;
-    } catch {
-      await fs.promises.writeFile(this.path, JSON.stringify([]));
-      const resolve = await fs.promises.readFile(this.path, "utf-8");
-      return resolve;
+      const products = JSON.parse(resolve);
+      return products;
+    } else {
+      return [];
     }
   };
 
@@ -143,16 +139,11 @@ class ProductManager {
 
 // A - Creando una instancia de la clase Product Manager
 
-const valencia = new ProductManager();
+const valencia = new ProductManager("./data/DB.json");
 
 // B - Se invoca a getProducts() devuelve productos | error y mensaje
 
-// valencia.getProducts().then((products) => {
-//   if (products !== undefined) {
-//     const result = JSON.parse(products);
-//     console.log(result);
-//   }
-// });
+//console.log(await valencia.getProducts())
 
 // C - Se agrega un nuevo producto
 
@@ -167,16 +158,11 @@ const valencia = new ProductManager();
 
 // D - Se invoca a getProducts() nuevamente con el prodcuto ya ingresado en el array
 
-// valencia.getProducts().then((products) => {
-//   const result = JSON.parse(products);
-//   console.log(result);
-// });
+//console.log(await valencia.getProducts())
 
 // E - Se invoca a la funcion getProductById para verificar que exista en al DB
 
-// valencia.getProductById(1).then((product) => {
-//   console.log(product);
-// });
+//console.log(await valencia.getProductById(1))
 
 // F - Se invoca a la funcion updateProduct con objeto completo y las modificaciones
 // este test devuelve el objeto por consola para verificar los cambios
@@ -197,9 +183,4 @@ const valencia = new ProductManager();
 
 // H - Verifico que el producto haya sido elimninado y me devuelva un array vacio
 
-// valencia.getProducts().then((products) => {
-//   if (products !== undefined) {
-//     const result = JSON.parse(products);
-//     console.log(result);
-//   }
-// });
+//console.log(await valencia.getProducts())
