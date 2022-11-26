@@ -3,6 +3,7 @@ const fs = require("fs");
 
 // Uso de estructura el desafio anterior
 class ProductManager {
+  // Al crear la instancia voy a pasar por parametro la ruta de la DB
   constructor(path) {
     this.path = path;
   }
@@ -72,10 +73,8 @@ class ProductManager {
   };
 
   // La funcion para leer la DB tiene dos partes
-  // Trata de leer la DB y si puede devuelve el array de productos
-  // Si la Db esta completamente vacia primero la escribe con el array vacio
-  // y despues devuelve ese array, sino el el metodo JSON.parse devuelve un error
-  // Ya que trata de convertir a string una resolucion undefined
+  // Trata de leer la DB y si existe, devuelve el array de productos
+  // sino devuelve un array vacio
   getProducts = async () => {
     if (fs.existsSync(this.path)) {
       const resolve = await fs.promises.readFile(this.path, "utf-8");
@@ -88,6 +87,8 @@ class ProductManager {
 
   // funcion para obtener los productos por el id, previamente me tengo que traer
   // los datos escritos en mi archivo DB.json
+  // busca dentro de mi array con el metodo find devolviendo el objeto
+  // sino un mensaje por consola que no lo encontro
   getProductById = async (productId) => {
     const productsCopy = await fs.promises.readFile(this.path, "utf-8");
     const productsCopyObj = JSON.parse(productsCopy);
@@ -125,6 +126,8 @@ class ProductManager {
 
   // funcion para eliminar prodcutos de mi archivo
   // similar a la funcion sincrona pero ahora obtenemos el array leyendo la DB
+  // filtramos todos lo productos que no coinciden con el id
+  // volvemos a escribir la DB con el array filtrado
   deleteProduct = async (productId) => {
     const productsCopy = await fs.promises.readFile(this.path, "utf-8");
     const productsCopyObj = JSON.parse(productsCopy);
