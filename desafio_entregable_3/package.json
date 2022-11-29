@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-server": "node ./src/server/server.js",
+    "start-server": "nodemon ./src/server/server.js",
     "start-app": "node ./src/app/app.js"
   },
   "author": "Valencia Vernengo Juan Cruz",

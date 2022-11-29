@@ -39,9 +39,11 @@ app.get("/products/:id", async (req, res) => {
   if (fs.existsSync(DBURL)) {
     const data = await fs.promises.readFile(DBURL, "utf-8");
     const products = JSON.parse(data);
+    const validateId = products.some((product) => product.id === Number(id));
+    console.log(validateId);
     // si el id se encuntra entre los id de mi array de productos lo muestra
     // sino imprime que le producto no se encontro
-    if (products.some((product) => product.id === id)) {
+    if (validateId) {
       res.json(products.find((product) => product.id === Number(id)));
     } else {
       res.send("PRODUCT NOT FOUND");
@@ -51,5 +53,8 @@ app.get("/products/:id", async (req, res) => {
 
 // le digo a mi app que escuche el puerto
 // imprimo en consola el numero de puerto
-app.listen(port);
-console.log(`server listening port ${port}`);
+app.listen(port, () => {
+  console.log(`server listening port ${port}`);
+});
+
+// TEST - npm run start-server - el servidor es iniciado con nodemon.
