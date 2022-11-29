@@ -1,0 +1,17 @@
+{
+  "name": "desafio_entregable_3",
+  "version": "1.0.0",
+  "description": "Tercer desafio del curso de backend CoderHouse",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-server": "node ./src/server/server.js",
+    "start-app": "node ./src/app/app.js"
+  },
+  "author": "Valencia Vernengo Juan Cruz",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  }
+}
