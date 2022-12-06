@@ -1,0 +1,18 @@
+{
+  "name": "pre_entrega_1",
+  "version": "1.0.0",
+  "description": "Primera entrega final backend coderhouse",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server/server.js",
+    "dev": "nodemon src/server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Valencia Vernengo Juan Cruz",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  }
+}
