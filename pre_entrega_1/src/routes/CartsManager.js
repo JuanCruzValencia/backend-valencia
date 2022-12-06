@@ -4,7 +4,7 @@ import { ERRORS } from "../consts/errors.js";
 
 const router = Router();
 
-router.post("/api/carts/", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const newCart = await CartManager.createCart();
 
@@ -22,11 +22,11 @@ router.post("/api/carts/", async (req, res) => {
   }
 });
 
-router.get("/api/carts/:cid", async (req, res) => {
+router.get("/:cid", async (req, res) => {
   try {
-    const { cid: cartId } = req.params;
+    const { cid } = req.params;
 
-    const id = Number(cartId);
+    const id = Number(cid);
 
     if (Number.isNaN(id) || id < 0) {
       return res.send({
@@ -58,7 +58,7 @@ router.get("/api/carts/:cid", async (req, res) => {
   }
 });
 
-router.post("/api/carts/:cid/product/:pid", async (req, res) => {
+router.post("/:cid/products/:pid", async (req, res) => {
   try {
     const { cid: cartId } = req.params;
 

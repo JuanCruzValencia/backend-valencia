@@ -8,9 +8,20 @@ router.get("/", async (req, res) => {
   try {
     const products = await ProductsManager.getProducts();
 
+    const { limit } = req.query;
+
+    if (!limit || limit < 0) {
+      return res.send({
+        succes: true,
+        products,
+      });
+    }
+
+    const filteredProducts = products.slice(0, limit);
+
     res.send({
       succes: true,
-      products,
+      products: filteredProducts,
     });
   } catch (error) {
     console.log(error);
@@ -24,9 +35,9 @@ router.get("/", async (req, res) => {
 
 router.get("/:pid", async (req, res) => {
   try {
-    const { pid: paramId } = req.params;
+    const { pid } = req.params;
 
-    const id = Number(paramId);
+    const id = Number(pid);
 
     if (Number.isNaN(id) || id < 0) {
       return res.send({
@@ -60,29 +71,25 @@ router.get("/:pid", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const {
-      title,
-      description,
-      code,
-      price,
-      stat,
-      stock,
-      category,
-      thumbnail,
-    } = req.body;
+    const { title, description, code, price, stock, category, thumbnail } =
+      req.body;
 
     const newProduct = {
       title,
       description,
       code,
       price,
-      stat,
       stock,
       category,
       thumbnail,
     };
 
     await ProductsManager.addProduct({ ...newProduct });
+
+    res.send({
+      succes: true,
+      productAdded: newProduct,
+    });
   } catch (error) {
     console.log(error);
 
@@ -109,9 +116,9 @@ router.post("/", async (req, res) => {
 
 router.put("/:pid", async (req, res) => {
   try {
-    const { id: paramId } = req.params;
+    const { pid } = req.params;
 
-    const id = Number(paramId);
+    const id = Number(pid);
 
     if (Number.isNaN(id) || id < 0) {
       return res.send({
@@ -120,7 +127,9 @@ router.put("/:pid", async (req, res) => {
       });
     }
 
-    const productUpdated = await ProductsManager.updateProduct(id);
+    const productUpdate = req.body;
+
+    const productUpdated = await ProductsManager.updateProduct(id, productUpdate);
 
     res.send({
       succes: true,
@@ -145,9 +154,9 @@ router.put("/:pid", async (req, res) => {
 
 router.delete("/:pid", async (req, res) => {
   try {
-    const { id: paramId } = req.params;
+    const { pid } = req.params;
 
-    const id = Number(paramId);
+    const id = Number(pid);
 
     if (Number.isNaN(id) || id < 0) {
       return res.send({

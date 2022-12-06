@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import productManagerRouter from "../Managers/ProductsManager.js";
-import cartManagerRouter from "../Managers/CartsManager.js";
+import productManagerRouter from "../routes/ProductsManager.js";
+import cartManagerRouter from "../routes/CartsManager.js";
 
 const process = dotenv.config().parsed;
 const { PORT } = process;

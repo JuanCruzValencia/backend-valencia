@@ -40,14 +40,12 @@ export class ProductManager {
     description,
     code,
     price,
-    stat,
     stock,
     category,
     thumbnail,
   }) => {
     return (
       title.trim().length > 0 &&
-      typeof stat === Boolean &&
       category.trim().length > 0 &&
       description.trim().length > 0 &&
       thumbnail.length > 0 &&
@@ -65,24 +63,24 @@ export class ProductManager {
     return isInDb;
   };
 
-  addProduct = async (
+  addProduct = async ({
     title,
     description,
     code,
     price,
-    stat,
     stock,
     category,
-    thumbnail
-  ) => {
+    thumbnail,
+  }) => {
     const id = await this.getProductId().then((id) => id);
+
     const newProduct = {
       id,
       title,
       description,
       code,
       price,
-      stat,
+      state: true,
       stock,
       category,
       thumbnail,
@@ -103,6 +101,8 @@ export class ProductManager {
     products.push(newProduct);
 
     await this.#writeFile(products);
+
+    return newProduct;
   };
 
   getProducts = async () => {
@@ -128,7 +128,7 @@ export class ProductManager {
       (product) => product.id === productId
     );
 
-    if (productToUpdate === -1) {
+    if (productToUpdateIndex === -1) {
       throw new NotFoundError("Producto no encontrado");
     }
 
@@ -162,10 +162,7 @@ export class ProductManager {
     return productsUpdated[0];
   };
 
-  //generar 3 metodos mas del product manager
-  // [X] crear carrito
-  // [] obtener prodcutos dentro del carrito
-  // [] agregar prodcutos al carrito
+  //CART LOGIC
 
   #getAllCarts = async () => {
     const resolve = await fs.promises.readFile(this.path, "utf-8");
@@ -184,12 +181,12 @@ export class ProductManager {
   createCart = async () => {
     const allCarts = await this.#getAllCarts();
 
+    const id = !allCarts.length ? 1 : allCarts[allCarts.length - 1].id + 1;
+
     const newCart = {
       id,
       products: [],
     };
-
-    newCart.id = !allCarts.length ? 1 : allCarts[allCarts.length - 1].id + 1;
 
     allCarts.push(newCart);
 
@@ -218,11 +215,17 @@ export class ProductManager {
     );
 
     if (productExist) {
-      const productInCartIndex = selectedCart.findIndex(
-        (product) => product.id === pid
+      const addCountToSelectedProduct = selectedCart.products.find(
+        (product) => product.id === selectedProduct.id
       );
 
-      selectedCart.products[productInCartIndex].quantity++;
+      console.log(addCountToSelectedProduct);
+
+      addCountToSelectedProduct.quantity++;
+
+      await this.#writeFile(allCarts);
+
+      return selectedCart
     }
 
     selectedCart.products.push({
