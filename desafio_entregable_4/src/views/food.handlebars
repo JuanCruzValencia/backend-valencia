@@ -1,0 +1,20 @@
+<div>
+  <div>
+    <h4>{{user.name}}</h4>
+    <p>{{user.role}}</p>
+  </div>
+  <div>
+    {{#if isAdmin}}
+      {{#each foods}}
+        <ul>
+          <li>{{this.name}}</li>
+          <li><b>${{this.price}}</b></li>
+        </ul>
+      {{/each}}
+    {{else}}
+      <p>
+        No tiene permiso para ver los productos
+      </p>
+    {{/if}}
+  </div>
+</div>
