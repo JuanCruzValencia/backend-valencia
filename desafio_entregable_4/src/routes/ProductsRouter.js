@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
     const products = await ProdManager.getProducts();
 
     if (!products) {
-      res.send({
+      return res.send({
         succes: false,
         error: "An unexpected error has ocurred",
       });
@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
     const { limit } = req.query;
 
     if (!limit || limit < 0) {
-      res.send({
+      return res.send({
         succes: true,
         products,
       });
@@ -47,7 +47,7 @@ router.get("/:pid", async (req, res) => {
     const id = Number(pid);
 
     if (Number.isNaN(id) || id < 0) {
-      res.send({
+      return res.send({
         succes: false,
         error: "Invalid ID",
       });
@@ -63,7 +63,7 @@ router.get("/:pid", async (req, res) => {
     console.log(error);
 
     if (error.name === ERRORS.NOT_FOUND_ERROR) {
-      res.send({
+      return res.send({
         succes: false,
         error: `${error.name}: ${error.message}`,
       });
@@ -80,15 +80,91 @@ router.post("/", async (req, res) => {
   try {
     const newProduct = req.body;
 
+    const productsUpdated = await ProdManager.addProduct({ ...newProduct });
+
     res.send({
       succes: true,
-      product: newProduct,
+      message: productsUpdated.message,
     });
   } catch (error) {
     console.log(error);
 
     if (error.name === ERRORS.VALIDATION_ERROR) {
-      res.send({
+      return res.send({
+        succes: false,
+        error: `${error.name}: ${error.message}`,
+      });
+    }
+
+    res.send({
+      succes: false,
+      error: "An unexpected error has ocurred",
+    });
+  }
+});
+
+router.put("/:pid", async (req, res) => {
+  try {
+    const { pid } = req.params;
+
+    const id = Number(pid);
+
+    if (Number.isNaN(id) || id < 0) {
+      return res.send({
+        succes: false,
+        error: "Invalid product ID",
+      });
+    }
+
+    const productToUpdate = req.body;
+
+    const updatedProduct = await ProdManager.updateProduct(id, productToUpdate);
+
+    res.send({
+      succes: true,
+      product: updatedProduct,
+    });
+  } catch (error) {
+    console.log(error);
+
+    if (error.name === ERRORS.NOT_FOUND_ERROR) {
+      return res.send({
+        succes: false,
+        error: `${error.name}: ${error.message}`,
+      });
+    }
+
+    res.send({
+      succes: false,
+      error: "An unexpected error has ocurred",
+    });
+  }
+});
+
+router.delete("/:pid", async (req, res) => {
+  try {
+    const { pid } = req.params;
+
+    const id = Number(pid);
+
+    if (Number.isNaN(id) || id < 0) {
+      return res.send({
+        succes: false,
+        error: "Invalid product ID",
+      });
+    }
+
+    const deletedProduct = await ProdManager.deleteProduct(id);
+
+    res.send({
+      succes: true,
+      deleted: deletedProduct,
+    });
+  } catch (error) {
+    console.log(error);
+
+    if (error.name === ERRORS.NOT_FOUND_ERROR) {
+      return res.send({
         succes: false,
         error: `${error.name}: ${error.message}`,
       });

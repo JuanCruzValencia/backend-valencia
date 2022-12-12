@@ -1,19 +1,3 @@
-// import express from "express";
-// import handlebars from "express-handlebars";
-// import __dirname from "../utils.js";
-
-// const app = express();
-// const PORT = 8080 || 5000;
-
-// // iniciando el motor de handlebars
-
-// app.engine("handlebars", handlebars.engine());
-
-// app.set("views", __dirname + "/views");
-
-// app.set("view engine", "handlebars");
-
-// app.use(express.static(__dirname + "/public"));
 
 // app.get("/", (req, res) => {
 //   const user = {
@@ -60,9 +44,10 @@
 
 import express from "express";
 import handlebars from "express-handlebars";
-import __dirname from "../utils.js";
+import { __dirname } from "../utils/index.js";
 import { PORT } from "../const/port.js";
 import ProductRouter from "../routes/ProductsRouter.js";
+import CartRouter from "../routes/CartRouter.js";
 
 const app = express();
 
@@ -80,6 +65,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // routes path setup
 app.use("/api/products", ProductRouter);
+app.use("/api/products/:pid", ProductRouter);
+
+app.use("/api/carts", CartRouter);
+app.use("/api/carts/:cid", CartRouter);
+app.use("/api/carts/:cid/products/:pid", CartRouter);
 
 // app server uo
 app.listen(PORT, () => {
