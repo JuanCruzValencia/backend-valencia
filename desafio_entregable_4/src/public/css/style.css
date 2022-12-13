@@ -9,6 +9,28 @@ body {
   background-color: #f49390;
 }
 
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding:10px 50px;
+  background-color: bisque;
+}
+
+ul {
+  display: flex;
+  gap: 1rem;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  color: #333;
+  text-decoration: none;
+}
+
 img {
   max-width: 200px;
   height: 200px;

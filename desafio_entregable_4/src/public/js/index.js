@@ -1,1 +1,5 @@
-console.log("Primer JS desde handlebars");
+const socket = io();
+
+socket.emit("message", () => {
+  console.log("buenas");
+});

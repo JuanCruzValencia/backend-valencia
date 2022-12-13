@@ -2,9 +2,8 @@ import express from "express";
 import handlebars from "express-handlebars";
 import { __dirname } from "../utils_dirname.js";
 import { PORT } from "../const/port.js";
-import ProductRouter from "../routes/ProductsRouter.js";
-import CartRouter from "../routes/CartRouter.js";
-import ViewsRouter from "../routes/views.router.js";
+import { ProductRouter, CartRouter, ViewsRouter } from "../routes/index.js";
+import { Server } from "socket.io";
 
 const app = express();
 
@@ -33,6 +32,11 @@ app.use("/api/carts/:cid/products/:pid", CartRouter);
 app.use("/", ViewsRouter);
 
 // app server uo
-app.listen(PORT, () => {
+const httpServer = app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`);
+});
+const socketServer = new Server(httpServer);
+
+socketServer.on("connection", (socket) => {
+  console.log("client connected");
 });
