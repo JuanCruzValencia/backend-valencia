@@ -1,22 +1,23 @@
 {
-  "name": "desafio_entregable_4",
+  "name": "clase10_websockets",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "",
+  "main": "app.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/server/server.js",
-    "dev": "nodemon src/server/server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
-    "express-handlebars": "^6.0.6"
+    "express-handlebars": "^6.0.6",
+    "socket.io": "^4.5.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
-  },
-  "description": ""
+  }
 }

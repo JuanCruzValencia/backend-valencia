@@ -1,17 +1,15 @@
 <div class="products__container">
   {{#each products}}
     <div class="product__container">
-      <span class="product__category">{{this.category}}</span>
-      <div>
-        <h3 class="product__title">{{this.title}}</h3>
-        <h4 class="product__price">${{this.price}}</h4>
+      <div class="product__category">
+        <span>{{this.category}}</span>
       </div>
-      <div>
+      <div class="product__img--container">
         <img src={{this.thumbnail}} alt={{this.title}} />
       </div>
-      <div>
-        <p class="product__description">{{this.description}}</p>
-      </div>
+      <h4 class="product__price">PRICE: ${{this.price}}</h4>
+      <h3 class="product__title">{{this.title}}</h3>
+      <button>add to cart</button>
     </div>
   {{/each}}
 </div>

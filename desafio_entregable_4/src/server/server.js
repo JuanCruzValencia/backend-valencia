@@ -1,46 +1,3 @@
-// app.get("/", (req, res) => {
-//   const user = {
-//     name: "Juan Cruz",
-//     lastName: "Valencia",
-//   };
-
-//   res.render("index", user);
-// });
-
-// const foods = [
-//   {
-//     name: "burga",
-//     price: 200,
-//   },
-//   {
-//     name: "pizza",
-//     price: 230,
-//   },
-//   {
-//     name: "ice cream",
-//     price: 150,
-//   },
-// ];
-
-// const newUser = {
-//   name: "Juan",
-//   lastName: "Valencia",
-//   role: "admin",
-// };
-
-// app.get("/food", (req, res) => {
-//   res.render("food", {
-//     style: "style.css",
-//     user: newUser,
-//     isAdmin: newUser.role === "admin",
-//     foods,
-//   });
-// });
-
-// app.listen(PORT, () => {
-//   console.log(`Server running on port: ${PORT}`);
-// });
-
 import express from "express";
 import handlebars from "express-handlebars";
 import { __dirname } from "../utils_dirname.js";
@@ -66,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 // routes path setup
 app.use("/api/products", ProductRouter);
 app.use("/api/products/:pid", ProductRouter);
+
 // cart routes
 app.use("/api/carts", CartRouter);
 app.use("/api/carts/:cid", CartRouter);

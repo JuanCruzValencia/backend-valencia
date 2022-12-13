@@ -27,7 +27,7 @@ router.get("/", async (req, res) => {
     const filteredProducts = products.slice(0, limit);
 
     res.render("home", {
-      succes: true,
+      style: "style.css",
       products: filteredProducts,
     });
   } catch (error) {
