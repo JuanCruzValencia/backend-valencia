@@ -1,6 +1,6 @@
 import express from "express";
 import { ProdManager } from "../app/index.js";
-//import { ERRORS } from "../const/errors.js";
+import { ERRORS } from "../const/errors.js";
 
 const router = express.Router();
 
@@ -44,6 +44,10 @@ router.get("/realTimeProducts", async (req, res) => {
   try {
     const products = await ProdManager.getProducts();
 
+    const io = req.io;
+
+    io.emit("products", products);
+
     if (!products) {
       return res.send({
         succes: false,
@@ -84,10 +88,14 @@ router.post("/realTimeProducts", async (req, res) => {
 
     const products = await ProdManager.getProducts();
 
-    res.render("realTimeProducts", {
-      style: "style.css",
-      products,
-    });
+    req.io.emit("addProduct", products);
+
+    res.send(
+      console.log({
+        succes: true,
+        product: newProduct,
+      })
+    );
   } catch (error) {
     console.log(error);
 

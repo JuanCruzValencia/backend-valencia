@@ -131,9 +131,20 @@
    },
    {
       "id": 11,
-      "title": "Producto de prueba",
-      "description": "Este es un prodcuto de prueba",
-      "code": "asasdd",
+      "title": "Producto de prueba 2",
+      "description": "Este es un prodcuto de prueba 2",
+      "code": "sssaaa",
+      "price": 300,
+      "stock": 10,
+      "category": "ropa",
+      "status": true,
+      "thumbnails": []
+   },
+   {
+      "id": 12,
+      "title": "Producto de prueba 3",
+      "description": "Este es un prodcuto de prueba 2",
+      "code": "qweqwe",
       "price": 300,
       "stock": 10,
       "category": "ropa",

@@ -7,6 +7,18 @@ import { Server } from "socket.io";
 
 const app = express();
 
+// app server uo
+const httpServer = app.listen(PORT, () => {
+  console.log(`Server running on port: ${PORT}`);
+});
+const socketServer = new Server(httpServer);
+
+app.use((req, res, next) => {
+  req.io = socketServer;
+
+  return next();
+});
+
 // handlebars setup
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
@@ -28,15 +40,13 @@ app.use("/api/carts", CartRouter);
 app.use("/api/carts/:cid", CartRouter);
 app.use("/api/carts/:cid/products/:pid", CartRouter);
 
-// views routes
-app.use("/", ViewsRouter);
-
-// app server uo
-const httpServer = app.listen(PORT, () => {
-  console.log(`Server running on port: ${PORT}`);
-});
-const socketServer = new Server(httpServer);
-
 socketServer.on("connection", (socket) => {
   console.log("client connected");
+
+  socket.on("message", (data) => {
+    console.log(data);
+  });
 });
+
+// views routes
+app.use("/", ViewsRouter);
