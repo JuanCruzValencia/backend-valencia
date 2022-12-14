@@ -44,7 +44,7 @@ router.get("/realTimeProducts", async (req, res) => {
   try {
     const products = await ProdManager.getProducts();
 
-    const io = req.io;
+    // const io = req.io;
 
     if (!products) {
       return res.send({
@@ -53,19 +53,15 @@ router.get("/realTimeProducts", async (req, res) => {
       });
     }
 
-    const { limit } = req.query;
+    // const { limit } = req.query;
 
-    if (!limit || limit < 0) {
-      io.emit("products", products);
+    // if (!limit || limit < 0) {
+    //   return res.render("realTimeProducts", {
+    //     style: "style.css",
+    //   });
+    // }
 
-      return res.render("realTimeProducts", {
-        style: "style.css",
-      });
-    }
-
-    const filteredProducts = products.slice(0, limit);
-
-    io.emit("products", filteredProducts);
+    //const filteredProducts = products.slice(0, limit);
 
     res.render("realTimeProducts", {
       style: "style.css",
