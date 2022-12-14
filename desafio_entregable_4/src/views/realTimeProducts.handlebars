@@ -1,23 +1,5 @@
 <main>
-  <div class="products__container">
-    {{#each products}}
-      <div class="product__container">
-        <div class="product__category">
-          <span>{{this.category}}</span>
-        </div>
-        <div class="product__img--container">
-          <img src={{this.thumbnail}} alt={{this.title}} />
-        </div>
-        <h4 class="product__price">PRICE: ${{this.price}}</h4>
-        <h3 class="product__title">{{this.title}}</h3>
-        <div>
-          <button>add to cart</button>
-          <button>trash</button>
-        </div>
-      </div>
-    {{/each}}
-  </div>
-  <div id="socket__container"></div>
+  <div id="socket__container" class="products__container"></div>
 </main>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/index.js"></script>

@@ -13,6 +13,7 @@ const httpServer = app.listen(PORT, () => {
 });
 const socketServer = new Server(httpServer);
 
+// paso por middlewares sockets
 app.use((req, res, next) => {
   req.io = socketServer;
 
@@ -41,11 +42,7 @@ app.use("/api/carts/:cid", CartRouter);
 app.use("/api/carts/:cid/products/:pid", CartRouter);
 
 socketServer.on("connection", (socket) => {
-  console.log("client connected");
-
-  socket.on("message", (data) => {
-    console.log(data);
-  });
+  console.log("Client connected");
 });
 
 // views routes

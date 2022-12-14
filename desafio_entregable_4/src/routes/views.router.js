@@ -46,8 +46,6 @@ router.get("/realTimeProducts", async (req, res) => {
 
     const io = req.io;
 
-    io.emit("products", products);
-
     if (!products) {
       return res.send({
         succes: false,
@@ -58,17 +56,19 @@ router.get("/realTimeProducts", async (req, res) => {
     const { limit } = req.query;
 
     if (!limit || limit < 0) {
+      io.emit("products", products);
+
       return res.render("realTimeProducts", {
         style: "style.css",
-        products,
       });
     }
 
     const filteredProducts = products.slice(0, limit);
 
-    res.render("home", {
+    io.emit("products", filteredProducts);
+
+    res.render("realTimeProducts", {
       style: "style.css",
-      products: filteredProducts,
     });
   } catch (error) {
     console.log(error);
@@ -128,10 +128,18 @@ router.delete("/realTimeProducts/:pid", async (req, res) => {
 
     const deletedProduct = await ProdManager.deleteProduct(id);
 
-    res.send({
-      succes: true,
-      deleted: deletedProduct,
-    });
+    const products = await ProdManager.getProducts();
+
+    const io = req.io;
+
+    io.emit("deletedProduct", products);
+
+    res.send(
+      console.log({
+        succes: true,
+        deleted: deletedProduct,
+      })
+    );
   } catch (error) {
     console.log(error);
 

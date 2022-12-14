@@ -64,7 +64,7 @@ class ProductManager {
     price,
     stock,
     category,
-    thumbnails,
+    thumbnail,
   }) => {
     if (!title && !description && !code && !price && !stock && !category) {
       throw new ValidationError("FILL ALL THE INPUTS");
@@ -91,7 +91,7 @@ class ProductManager {
       stock,
       category,
       status: true,
-      thumbnails: thumbnails || [],
+      thumbnail,
     };
 
     const products = await this.getProducts();
