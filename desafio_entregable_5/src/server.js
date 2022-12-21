@@ -1,0 +1,33 @@
+import express from "express";
+import { Server } from "socket.io";
+import handlebars from "express-handlebars";
+import __dirname from "./utils.js";
+
+const app = express();
+const PORT = 8080 || 3000;
+const httpServer = app.listen(PORT, () => {
+  console.log(`Server runnign on port: ${PORT}`);
+});
+const io = new Server(httpServer);
+
+//setup public
+app.use(express.static(__dirname + "/public"));
+
+// setup handlebars
+app.engine("handlebars", handlebars.engine());
+app.set("views", __dirname + "/views");
+app.set("view engine", "handlebars");
+
+// middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// router setup
+app.use("/", viewsRouter);
+
+// socket global use
+app.set("io", io());
+
+io.on("connected", (socket) => {
+  console.log("new client connected");
+});
