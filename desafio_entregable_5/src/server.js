@@ -2,6 +2,8 @@ import express from "express";
 import { Server } from "socket.io";
 import handlebars from "express-handlebars";
 import __dirname from "./utils.js";
+import mongoose from "mongoose";
+import viewsRouter from "./routes/viewsRouter.js";
 
 const app = express();
 const PORT = 8080 || 3000;
@@ -26,8 +28,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", viewsRouter);
 
 // socket global use
-app.set("io", io());
+app.use((req, res, next) => {
+  req.io = io;
+});
 
 io.on("connected", (socket) => {
   console.log("new client connected");
 });
+
+mongoose.connect(
+  "mongodb+srv://jcvalencia:Nat2308Jua3112@cluster0.dkgq78x.mongodb.net/ecommerce?retryWrites=true&w=majority",
+  (error) => {
+    if (error) {
+      console.log(error);
+      process.exit();
+    }
+  }
+);
