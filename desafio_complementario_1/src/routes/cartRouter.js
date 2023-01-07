@@ -1,9 +1,34 @@
 import express from "express";
 import CartModel from "../dao/models/cart.model.js";
-import ProductsModel from "../dao/models/products.model.js";
 import { ERRORS } from "../consts/errors.js";
 
 const Router = express.Router();
+
+// muestra los carritos
+Router.get("/", async (req, res) => {
+  try {
+    const carts = await CartModel.find();
+
+    if (!carts) {
+      res.send({
+        succes: false,
+        error: ERRORS.NOT_FOUND_ERROR,
+      });
+    }
+
+    res.send({
+      succes: true,
+      payload: carts,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.send({
+      succes: false,
+      error,
+    });
+  }
+});
 
 // crear un nuevo carrito en la primer instancia
 Router.post("/", async (req, res) => {
@@ -65,7 +90,7 @@ Router.get("/:cuuid", async (req, res) => {
   }
 });
 
-// agregar un producto a un carrito
+// agregar un producto a un carrito || modificar cantidad si ya existe
 Router.post("/:cuuid/:puuid", async (req, res) => {
   try {
     const { cuuid } = req.params;
@@ -86,22 +111,41 @@ Router.post("/:cuuid/:puuid", async (req, res) => {
       });
     }
 
-    const product = await ProductsModel.findById({
-      _id: puuid,
+    const findProductInCart = await CartModel.findOne({
+      "products.id": puuid,
     });
 
-    const result = await ProductsModel.updateOne(
+    if (findProductInCart) {
+      const updateProduct = await CartModel.updateOne(
+        {
+          "products.id": puuid,
+        },
+        {
+          $inc: {
+            "products.$.quantity": 1,
+          },
+        }
+      );
+
+      return res.send({
+        succes: true,
+        payload: updateProduct,
+      });
+    }
+
+    const result = await CartModel.updateOne(
       {
         _id: cuuid,
       },
       {
-        products: product,
+        $push: {
+          products: { id: puuid, quantity: 1 },
+        },
       }
     );
 
     res.send({
       succes: true,
-      product,
       payload: result,
     });
   } catch (error) {
