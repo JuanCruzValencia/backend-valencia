@@ -57,6 +57,47 @@ Router.get("/:pid", async (req, res) => {
 //Agrego un nuevo producto que llega por req.body
 Router.post("/", async (req, res) => {
   try {
+    const newProduct = req.body;
+
+    if (!newProduct) {
+      return res.send({
+        status: "error",
+        error: "EMPTY PRODUCT",
+      });
+    }
+
+    const result = await Managers.ProductsManager.addProduct(newProduct);
+
+    res.send({
+      status: "succes",
+      payload: result,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.send({
+      status: "error",
+      error: error.message || "SOMETHING WENT WRONG",
+    });
+  }
+});
+
+//Actualizar un producto
+Router.put("/:pid", async (req, res) => {
+  try {
+  } catch (error) {
+    console.log(error);
+
+    res.send({
+      status: "error",
+      error: error.message || "SOMETHING WENT WRONG",
+    });
+  }
+});
+
+// Eliminar un producto
+Router.delete("/:pid", async (req, res) => {
+  try {
   } catch (error) {
     console.log(error);
 
