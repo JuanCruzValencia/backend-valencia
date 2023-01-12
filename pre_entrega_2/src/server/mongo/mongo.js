@@ -1,4 +1,4 @@
-import { connect } from "mongoose";
+import { connect, set } from "mongoose";
 import { config } from "dotenv";
 
 const process = config().parsed;
@@ -6,7 +6,8 @@ const { MONGOOSE_URI } = process;
 
 export const connectDB = async () => {
   try {
-    await connect(MONGOOSE_URI);
+    set("strictQuery", false);
+    await connect(MONGOOSE_URI, { dbName: "ecommerce" });
 
     console.log("Connected to DB");
   } catch (error) {

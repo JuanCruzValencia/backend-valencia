@@ -20,7 +20,7 @@ export class ProductManager {
   // Mostrar un producto por id
   getProductById = async (pid) => {
     try {
-      const product = await productsModel.find({ _id: pid });
+      const product = await productsModel.findById({ _id: pid });
 
       if (!product) {
         throw new NotFoundError("PRODUCT NOT FOUND");
