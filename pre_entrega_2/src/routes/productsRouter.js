@@ -6,22 +6,35 @@ const Router = express.Router();
 //Mostrar todos los productos
 Router.get("/", async (req, res) => {
   try {
-    const products = await Managers.ProductsManager.getProducts();
+    const { sort, query } = req.query;
+    const page = Number(req.query.page);
+    const limit = Number(req.query.limit);
+    const options = {
+      limit: limit || 5,
+      page: page || 1,
+      sort: { price: sort } || { price: 1 },
+      lean: true,
+    };
 
-    const { limit } = req.query;
+    const products = await Managers.ProductsManager.getProducts(query, options);
 
-    if (!limit || limit < 0) {
-      return res.send({
-        status: "succes",
-        payload: products,
-      });
-    }
-
-    const filteredProducts = products.slice(0, limit);
+    console.log(products);
 
     res.send({
       status: "succes",
-      payload: filteredProducts,
+      payload: products.docs,
+      totalPages: products.totalPages,
+      prevPage: products.prevPage,
+      nextPage: products.nextPage,
+      page: products.page,
+      hasPrevPage: products.hasPrevPage,
+      hasNextPage: products.hasNextPage,
+      prevLink: products.hasPrevPage
+        ? `/api/products?page=${products.prevPage}`
+        : null,
+      nextLink: products.hasNextPage
+        ? `/api/products?page=${products.nextPage}`
+        : null,
     });
   } catch (error) {
     console.log(error);
@@ -85,6 +98,16 @@ Router.post("/", async (req, res) => {
 //Actualizar un producto
 Router.put("/:pid", async (req, res) => {
   try {
+    const { pid } = req.params;
+
+    const updates = req.body;
+
+    const result = await Managers.ProductsManager.updateProduct(pid, updates);
+
+    res.send({
+      status: "succes",
+      payload: result,
+    });
   } catch (error) {
     console.log(error);
 
@@ -98,6 +121,14 @@ Router.put("/:pid", async (req, res) => {
 // Eliminar un producto
 Router.delete("/:pid", async (req, res) => {
   try {
+    const { pid } = req.params;
+
+    const result = await Managers.ProductsManager.deleteProduct(pid);
+
+    res.send({
+      status: "succes",
+      payload: result,
+    });
   } catch (error) {
     console.log(error);
 

@@ -1,15 +1,15 @@
 import cartModel from "../models/carts.model.js";
-import { InputsValidationError, NotFoundError } from "../../errors/errors.js";
+import { NotFoundError } from "../../errors/errors.js";
 
 export class CartManager {
-  constructor() {
-    this.#init();
-  }
-
   //Cuando inicio la instancia se crea un carrito
-  #init = async () => {
+  createCart = async () => {
     try {
-      const result = await cartModel.create();
+      const newCart = {
+        products: [],
+      };
+
+      const result = await cartModel.create(newCart);
 
       return result;
     } catch (error) {
@@ -51,17 +51,17 @@ export class CartManager {
   addProductToCart = async (cid, pid) => {
     try {
       const findProductInCart = await cartModel.findOne({
-        "products.id": pid,
+        "cart.id": pid,
       });
 
       if (findProductInCart) {
         const upgradeQuantity = await cartModel.updateOne(
           {
-            "products.id": pid,
+            "cart._id": pid,
           },
           {
             $inc: {
-              "products.$.quantity": 1,
+              "cart.$.quantity": 1,
             },
           }
         );
@@ -75,7 +75,7 @@ export class CartManager {
         },
         {
           $push: {
-            products: { pid, quantity: 1 },
+            cart: { _id: pid, quantity: 1 },
           },
         }
       );

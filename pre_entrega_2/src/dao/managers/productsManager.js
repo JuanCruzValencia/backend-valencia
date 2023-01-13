@@ -2,10 +2,10 @@ import productsModel from "../models/products.model.js";
 import { InputsValidationError, NotFoundError } from "../../errors/errors.js";
 
 export class ProductManager {
-  // Mostrar todos los productos
-  getProducts = async () => {
+  // Mostrar todos los productos con paginacion
+  getProducts = async (query, options) => {
     try {
-      const products = await productsModel.find();
+      const products = await productsModel.paginate({}, options);
 
       if (!products) {
         throw new Error("THE DB IS EMPTY");
@@ -58,7 +58,7 @@ export class ProductManager {
         throw new InputsValidationError("INVALID PRODUCT ID");
       }
 
-      const result = await productsModel.findByIdAndUpdate(
+      const result = await productsModel.updateOne(
         { _id: pid },
         updatedProduct
       );

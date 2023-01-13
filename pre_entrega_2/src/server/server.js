@@ -4,6 +4,7 @@ import { connectDB } from "./mongo/mongo.js";
 import { config } from "dotenv";
 import __dirname from "./util/dirname.js";
 import productsRouter from "../routes/productsRouter.js"
+import cartsRouter from "../routes/cartsRouter.js"
 
 //const
 const app = express();
@@ -31,4 +32,4 @@ app.set("view engine", "handlebars");
 //routes
 //app.use("/products", homeRouter);
 app.use("/api/products", productsRouter);
-//app.use("/api/carts", cartsRouter);
+app.use("/api/carts", cartsRouter);
