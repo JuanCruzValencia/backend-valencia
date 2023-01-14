@@ -18,7 +18,7 @@ const cartSchema = new Schema({
   },
 });
 
-cartSchema.pre("find", () => {
+cartSchema.pre("findById", () => {
   this.populate("cart.product");
 });
 

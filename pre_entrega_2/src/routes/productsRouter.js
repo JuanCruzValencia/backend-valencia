@@ -18,8 +18,6 @@ Router.get("/", async (req, res) => {
 
     const products = await Managers.ProductsManager.getProducts(query, options);
 
-    console.log(products);
-
     res.send({
       status: "succes",
       payload: products.docs,

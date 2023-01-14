@@ -127,14 +127,15 @@ Router.put("/:cid", async (req, res) => {
 // Actualizar la cantidad de un producto
 Router.put("/:cid/product/:pid", async (req, res) => {
   try {
-    const quantity = Number(req.body);
+    const { quantity } = req.body;
+
+    const { cid, pid } = req.params;
 
     const result = await Managers.CartsManager.addQuantityToProduct(
       quantity,
       cid,
       pid
     );
-    
 
     res.send({
       status: "succes",

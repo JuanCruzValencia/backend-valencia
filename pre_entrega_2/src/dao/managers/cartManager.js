@@ -97,17 +97,9 @@ export class CartManager {
         throw new NotFoundError("CART NOT FOUND");
       }
 
-      const findProductInCart = await findCart.findById({
-        "cart._id": pid,
-      });
-
-      if (!findProductInCart) {
-        throw new NotFoundError("PRODUCT NOT FOUND IN CART");
-      }
-
       const upgradeQuantity = await cartModel.updateOne(
         {
-          "cart._id": cid,
+          "cart._id": pid,
         },
         {
           $inc: {
@@ -115,6 +107,10 @@ export class CartManager {
           },
         }
       );
+
+      if (!upgradeQuantity) {
+        throw new NotFoundError("PRODUCT NOT FOUND IN CART");
+      }
 
       return upgradeQuantity;
     } catch (error) {

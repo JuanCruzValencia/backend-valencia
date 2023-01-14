@@ -2,9 +2,10 @@ import express from "express";
 import handlebars from "express-handlebars";
 import { connectDB } from "./mongo/mongo.js";
 import { config } from "dotenv";
-import __dirname from "./util/dirname.js";
+import __dirname from "../dirname.js";
 import productsRouter from "../routes/productsRouter.js"
 import cartsRouter from "../routes/cartsRouter.js"
+import viewsRouter from "../routes/viewsRouter.js"
 
 //const
 const app = express();
@@ -30,6 +31,6 @@ app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
 //routes
-//app.use("/products", homeRouter);
+app.use("/products", viewsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
