@@ -35,7 +35,7 @@ export class CartManager {
   //Muestra el carrito
   getCartById = async (cid) => {
     try {
-      const cart = await cartModel.findById({ _id: cid });
+      const cart = await cartModel.find({ _id: cid });
 
       if (!cart) {
         throw new NotFoundError("CART NOT FOUND");
@@ -51,7 +51,7 @@ export class CartManager {
   addProductToCart = async (cid, pid) => {
     try {
       const findProductInCart = await cartModel.findOne({
-        "cart.id": pid,
+        "cart._id": pid,
       });
 
       if (findProductInCart) {
@@ -87,10 +87,18 @@ export class CartManager {
   };
 
   //Actualizar cantidad de un producto
-  addQuantityToProduct = async (pid) => {
+  addQuantityToProduct = async (quantity, cid, pid) => {
     try {
-      const findProductInCart = await cartModel.findOne({
-        "products.id": pid,
+      const findCart = await cartModel.findById({
+        _id: cid,
+      });
+
+      if (!findCart) {
+        throw new NotFoundError("CART NOT FOUND");
+      }
+
+      const findProductInCart = await findCart.findById({
+        "cart._id": pid,
       });
 
       if (!findProductInCart) {
@@ -99,11 +107,11 @@ export class CartManager {
 
       const upgradeQuantity = await cartModel.updateOne(
         {
-          "products.id": pid,
+          "cart._id": cid,
         },
         {
           $inc: {
-            "products.$.quantity": 1,
+            "cart.$.quantity": quantity,
           },
         }
       );
@@ -115,19 +123,18 @@ export class CartManager {
   };
 
   //Eliminar un producto
-  deleteProductFromCart = async (pid) => {
+  deleteProductFromCart = async (cid, pid) => {
     try {
-      const findProductInCart = await cartModel.findOne({
-        "products.id": pid,
-      });
-
-      if (!findProductInCart) {
-        throw new NotFoundError("PRODUCT NOT FOUND IN CART");
-      }
-
-      const deleteOne = await cartModel.deleteOne({
-        "products.id": pid,
-      });
+      const deleteOne = await cartModel.updateOne(
+        {
+          _id: cid,
+        },
+        {
+          $pull: {
+            cart: { _id: pid },
+          },
+        }
+      );
 
       return deleteOne;
     } catch (error) {
@@ -136,9 +143,18 @@ export class CartManager {
   };
 
   //Vaciar carrito
-  emptyCart = async () => {
+  emptyCart = async (cid) => {
     try {
-      const emptyCart = await cartModel.remove({});
+      const emptyCart = await cartModel.updateOne(
+        {
+          _id: cid,
+        },
+        {
+          $set: {
+            cart: [],
+          },
+        }
+      );
 
       return emptyCart;
     } catch (error) {

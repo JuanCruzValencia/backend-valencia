@@ -9,8 +9,14 @@ const productSchema = new mongoose.Schema({
   code: String,
   price: Number,
   status: Boolean,
-  stock: Number,
-  category: String,
+  stock: {
+    type: Number,
+    index: true,
+  },
+  category: {
+    type: String,
+    index: true,
+  },
   thumbnail: {
     type: [String],
     default: [],

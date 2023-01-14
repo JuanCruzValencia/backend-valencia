@@ -48,11 +48,11 @@ Router.get("/:cid", async (req, res) => {
 
     const result = await Managers.CartsManager.getCartById(cid);
 
-    if(!result){
-        return res.send({
-            status: "error",
-            error: "CART NOT FOUND"
-        })
+    if (!result) {
+      return res.send({
+        status: "error",
+        error: "CART NOT FOUND",
+      });
     }
 
     res.send({
@@ -69,12 +69,93 @@ Router.get("/:cid", async (req, res) => {
   }
 });
 
-// Agrego un prodcuto al carrito
+// Agrego un producto al carrito
 Router.post("/:cid/product/:pid", async (req, res) => {
   try {
     const { cid, pid } = req.params;
 
     const result = Managers.CartsManager.addProductToCart(cid, pid);
+
+    res.send({
+      status: "succes",
+      payload: result,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.send({
+      status: "error",
+      error: error.message || "SOMTHING WENT WRONG",
+    });
+  }
+});
+
+// Eliminar del carrito el producto seleccionado
+Router.delete("/:cid/product/:pid", async (req, res) => {
+  try {
+    const { cid, pid } = req.params;
+
+    const result = await Managers.CartsManager.deleteProductFromCart(cid, pid);
+
+    res.send({
+      status: "succes",
+      payload: result,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.send({
+      status: "error",
+      error: error.message || "SOMETHING WENT WORNG",
+    });
+  }
+});
+
+// Agregar al carrito un array de productos
+Router.put("/:cid", async (req, res) => {
+  try {
+  } catch (error) {
+    console.log(error);
+
+    res.send({
+      status: "error",
+      error: error.message || "SOMTHING WENT WRONG",
+    });
+  }
+});
+
+// Actualizar la cantidad de un producto
+Router.put("/:cid/product/:pid", async (req, res) => {
+  try {
+    const quantity = Number(req.body);
+
+    const result = await Managers.CartsManager.addQuantityToProduct(
+      quantity,
+      cid,
+      pid
+    );
+    
+
+    res.send({
+      status: "succes",
+      payload: result,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.send({
+      status: "error",
+      error: error.message || "SOMTHING WENT WRONG",
+    });
+  }
+});
+
+//Vaciar el carrito
+Router.delete("/:cid", async (req, res) => {
+  try {
+    const { cid } = req.params;
+
+    const result = await Managers.CartsManager.emptyCart(cid);
 
     res.send({
       status: "succes",
