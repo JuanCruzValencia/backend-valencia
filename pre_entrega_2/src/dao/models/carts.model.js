@@ -12,14 +12,14 @@ const cartSchema = new Schema({
           type: Schema.Types.ObjectId,
           ref: "Products",
         },
-        quantity: Number,
+        quantity: {
+          type: Number,
+          default: 1,
+        },
       },
     ],
+    default: [],
   },
-});
-
-cartSchema.pre("findById", () => {
-  this.populate("cart.product");
 });
 
 const cartsModel = mongoose.model(cartsCollections, cartSchema);

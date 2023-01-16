@@ -5,6 +5,34 @@ export class ProductManager {
   // Mostrar todos los productos con paginacion
   getProducts = async (query, options) => {
     try {
+      if (query === "inStock") {
+        const products = await productsModel.paginate({ state: true }, options);
+
+        if (!products) {
+          throw new Error("THE DB IS EMPTY");
+        }
+
+        return products;
+      }
+
+      if (
+        query === "jewelery" ||
+        query === "men's clathing" ||
+        query === "electronics" ||
+        query === "women's clothinga"
+      ) {
+        const products = await productsModel.paginate(
+          { category: query },
+          options
+        );
+
+        if (!products) {
+          throw new Error("THE DB IS EMPTY");
+        }
+
+        return products;
+      }
+
       const products = await productsModel.paginate({}, options);
 
       if (!products) {
@@ -20,7 +48,7 @@ export class ProductManager {
   // Mostrar un producto por id
   getProductById = async (pid) => {
     try {
-      const product = await productsModel.findById({ _id: pid });
+      const product = await productsModel.findById({ _id: pid }).lean();
 
       if (!product) {
         throw new NotFoundError("PRODUCT NOT FOUND");

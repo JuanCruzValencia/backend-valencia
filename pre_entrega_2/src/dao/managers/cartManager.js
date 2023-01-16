@@ -6,7 +6,7 @@ export class CartManager {
   createCart = async () => {
     try {
       const newCart = {
-        products: [],
+        cart: [],
       };
 
       const result = await cartModel.create(newCart);
@@ -35,8 +35,8 @@ export class CartManager {
   //Muestra el carrito
   getCartById = async (cid) => {
     try {
-      const cart = await cartModel.find({ _id: cid });
-
+      const cart = await cartModel.findById({ _id: cid }).populate('cart.product').lean();
+    
       if (!cart) {
         throw new NotFoundError("CART NOT FOUND");
       }
@@ -51,13 +51,13 @@ export class CartManager {
   addProductToCart = async (cid, pid) => {
     try {
       const findProductInCart = await cartModel.findOne({
-        "cart._id": pid,
+        "cart.product": pid,
       });
 
       if (findProductInCart) {
         const upgradeQuantity = await cartModel.updateOne(
           {
-            "cart._id": pid,
+            "cart.product": pid,
           },
           {
             $inc: {
@@ -75,7 +75,7 @@ export class CartManager {
         },
         {
           $push: {
-            cart: { _id: pid, quantity: 1 },
+            cart: { product: pid },
           },
         }
       );
@@ -99,7 +99,7 @@ export class CartManager {
 
       const upgradeQuantity = await cartModel.updateOne(
         {
-          "cart._id": pid,
+          "cart.product": pid,
         },
         {
           $inc: {
@@ -118,6 +118,24 @@ export class CartManager {
     }
   };
 
+  // Agregar un array de productos al carrito
+  addArrayOfProudcts = async (cid, products) => {
+    try {
+      const result = await cartModel.updateOne(
+        { _id: cid },
+        {
+          $push: {
+            cart: { $each: [...products] },
+          },
+        }
+      );
+
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //Eliminar un producto
   deleteProductFromCart = async (cid, pid) => {
     try {
@@ -127,7 +145,7 @@ export class CartManager {
         },
         {
           $pull: {
-            cart: { _id: pid },
+            cart: { product: pid },
           },
         }
       );
