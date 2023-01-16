@@ -35,8 +35,11 @@ export class CartManager {
   //Muestra el carrito
   getCartById = async (cid) => {
     try {
-      const cart = await cartModel.findById({ _id: cid }).populate('cart.product').lean();
-    
+      const cart = await cartModel
+        .findById({ _id: cid })
+        .populate("cart.product")
+        .lean();
+
       if (!cart) {
         throw new NotFoundError("CART NOT FOUND");
       }
@@ -121,11 +124,15 @@ export class CartManager {
   // Agregar un array de productos al carrito
   addArrayOfProudcts = async (cid, products) => {
     try {
+      const productsMap = products.map((product) => {
+        return { product: product._id };
+      });
+
       const result = await cartModel.updateOne(
         { _id: cid },
         {
           $push: {
-            cart: { $each: [...products] },
+            cart: { $each: productsMap },
           },
         }
       );

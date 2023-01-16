@@ -114,6 +114,19 @@ Router.delete("/:cid/product/:pid", async (req, res) => {
 // Agregar al carrito un array de productos
 Router.put("/:cid", async (req, res) => {
   try {
+    const { cid } = req.params;
+
+    const products = req.body;
+
+    const result = await Managers.CartsManager.addArrayOfProudcts(
+      cid,
+      products
+    );
+
+    res.send({
+      status: "succes",
+      payload: result,
+    });
   } catch (error) {
     console.log(error);
 
