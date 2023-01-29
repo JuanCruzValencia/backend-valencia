@@ -7,7 +7,6 @@ import dotenv from "dotenv";
 dotenv.config();
 const UserManager = Managers.UsersManager;
 const LocalStrategy = local.Strategy;
-//const GitHubStrategy = github.Strategy;
 
 const initializePassporr = () => {
   //passport github
@@ -21,6 +20,13 @@ const initializePassporr = () => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
+          const findUser = await UserManager.getUserByEmail({ email: profile._json.email });
+
+
+          if (findUser) {
+            return done(null, findUser);
+          }
+
           const newUser = {
             first_name: profile._json.name,
             last_name: "",
