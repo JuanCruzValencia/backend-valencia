@@ -1,7 +1,6 @@
 import express from "express";
 import handlebars from "express-handlebars";
 import { connectDB } from "./mongo/mongo.js";
-import dotenv from "dotenv";
 import __dirname from "../dirname.js";
 import bodyParser from "body-parser";
 import session from "express-session";
@@ -18,7 +17,6 @@ import passport from "passport";
 
 //const
 const app = express();
-dotenv.config();
 
 // initialize passport
 initializePassporr();
@@ -33,7 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   session({
     store: MongoStore.create({
-      mongoUrl: process.env.MONGOOSE_URI,
+      mongoUrl: "mongodb+srv://jcvalencia:Nat2308Jua3112@cluster0.dkgq78x.mongodb.net/?retryWrites=true&w=majority",
       dbName: "ecommerce",
       mongoOptions: {
         useNewUrlParser: true,
@@ -61,6 +59,6 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 
 //server
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port" ${process.env.PORT}`);
+app.listen(8080, () => {
+  console.log(`Server running on port: 8080`);
 });
