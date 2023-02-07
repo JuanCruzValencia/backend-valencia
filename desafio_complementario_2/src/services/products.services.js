@@ -1,6 +1,6 @@
 import { productsModel } from "../models/products.model.js";
 
-export default class ProductsServices {
+class ProductsServices {
   getAllProducts = async (query, options) => {
     try {
       if (query === "inStock") {
