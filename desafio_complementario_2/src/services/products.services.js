@@ -50,7 +50,7 @@ class ProductsServices {
 
   addNewProduct = async (newProduct) => {
     try {
-      const product = await this.getProductById(newProduct.code);
+      const product = await productsModel.findOne({ code: newProduct.code });
 
       if (product) {
         throw new Error("Product Already Exist in DB");
@@ -100,4 +100,4 @@ class ProductsServices {
   };
 }
 
-export const ProductsService = new ProductsServices()
+export const ProductsService = new ProductsServices();

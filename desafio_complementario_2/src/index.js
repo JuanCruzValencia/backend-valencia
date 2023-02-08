@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import handlebars from "express-handlebars";
 import connectMongo from "./mongo.js";
 import passport from "passport";
+import cookieParser from "cookie-parser";
 import __dirname from "./utils.js";
 import productsRouter from "./routes/products.routes.js";
 import cartRouter from "./routes/carts.routes.js";
@@ -25,6 +26,7 @@ app.use(expres.json());
 app.use(expres.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(expres.static(__dirname + "/public"));
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 //routers
 app.use("/api/products", productsRouter);

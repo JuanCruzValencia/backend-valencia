@@ -3,7 +3,7 @@ import { ProductsService } from "../services/products.services.js";
 //buscar todos los producto
 export const getAllProductsCtr = async (req, res) => {
   try {
-    const { query, limit, sort, page } = req.params;
+    const { query, limit, sort, page } = req.query;
 
     const options = {
       limit: limit || 10,
@@ -61,7 +61,7 @@ export const addNewProductCtr = async (req, res) => {
 
     const result = await ProductsService.addNewProduct(newProduct);
 
-    return res.status(201).status({
+    return res.status(201).send({
       payload: result,
     });
   } catch (error) {

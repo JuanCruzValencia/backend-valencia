@@ -9,9 +9,9 @@ export const generateToken = (user) => {
 };
 
 export const authToekn = (req, res, next) => {
-  const authHeader = req.headers.auth;
+  const authCookie = req.cookies.process.env.COOKIE;
 
-  if (!authHeader) {
+  if (!authCookie) {
     return res.status(401).send({
       error: "Not Auth",
     });
@@ -30,4 +30,14 @@ export const authToekn = (req, res, next) => {
 
     next();
   });
+};
+
+import dotenv from "dotenv";
+dotenv.config();
+
+export const cookieExtractor = (req) => {
+  const token =
+    req && req.cookies ? req.cookies[process.env.COOKIE_TOKEN] : null;
+
+  return token;
 };

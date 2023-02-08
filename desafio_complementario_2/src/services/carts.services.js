@@ -28,7 +28,7 @@ class CartsServices {
     try {
       const cart = await cartsModel
         .findById({ _id: cid })
-        .populate("cart.product")
+        .populate("carts.product")
         .lean();
 
       if (!cart) throw new Error("Cart Not Found");
@@ -45,22 +45,26 @@ class CartsServices {
 
       if (!cart) throw new Error("Cart Not Found");
 
-      const findProduct = await cartsModel.findOne({ "cart.product": pid });
+      const findProduct = await cartsModel.findOne({ "carts.product": pid });
+
+      console.log(findProduct);
 
       if (findProduct) {
         const result = await cartsModel.updateOne(
-          { "cart.product": pid },
+          { "carts.product": pid },
           {
             $inc: {
-              "cart.$.quantity": 1,
+              "carts.$.quantity": 1,
             },
           }
         );
+
+        return result
       }
 
       const result = await cartsModel.updateOne(
         { _id: cid },
-        { $push: { cart: { product: pid } } }
+        { $push: { carts: { product: pid } } }
       );
 
       return result;
@@ -75,15 +79,15 @@ class CartsServices {
 
       if (!cart) throw new Error("Cart Not Found");
 
-      const product = await cartsModel.findOne({ "cart.product": pid });
+      const product = await cartsModel.findOne({ "carts.product": pid });
 
       if (!product) throw new Error("Product Not Found In Cart");
 
       const result = await cartsModel.updateOne(
-        { "cart.product": pid },
+        { "carts.product": pid },
         {
           $inc: {
-            "cart.$.quantity": quantity,
+            "carts.$.quantity": quantity,
           },
         }
       );
@@ -106,7 +110,7 @@ class CartsServices {
 
       const result = await cartsModel.updateOne(
         { _id: cid },
-        { $push: { cart: { $each: mapProducts } } }
+        { $push: { carts: { $each: mapProducts } } }
       );
 
       return result;
@@ -123,7 +127,7 @@ class CartsServices {
 
       const result = await cartsModel.updateOne(
         { _id: cid },
-        { $pull: { cart: { product: pid } } }
+        { $pull: { carts: { product: pid } } }
       );
 
       return result;
@@ -140,7 +144,7 @@ class CartsServices {
 
       const result = await cartsModel.updateOne(
         { _id: cid },
-        { $set: { cart: [] } }
+        { $set: { carts: [] } }
       );
     } catch (error) {
       console.log(error);
