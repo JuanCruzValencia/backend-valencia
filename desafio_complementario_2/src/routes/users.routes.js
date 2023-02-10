@@ -1,9 +1,20 @@
-//LOGICA DE LAS RUTAS DE LOS USUARIOS
+import express from "express";
+import {
+  getLogin,
+  getLogout,
+  getRegister,
+} from "../controllers/users.controllers.js";
 
-//REGISTER POST
+const Router = express.Router();
 
-//LOGIN POST
+Router.get("/register", getRegister);
 
-//REGISTER GET
+Router.get("/login", getLogin);
 
-//LOGIN GET
+Router.post("/register");
+
+Router.post("/login");
+
+Router.get("/logout", getLogout);
+
+export default Router;

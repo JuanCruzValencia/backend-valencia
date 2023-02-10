@@ -1,4 +1,7 @@
 import jwt from "jsonwebtoken";
+import passport from "passport";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const generateToken = (user) => {
   const token = jwt.sign({ user }, process.env.JWT_SECRET, {
@@ -32,12 +35,21 @@ export const authToekn = (req, res, next) => {
   });
 };
 
-import dotenv from "dotenv";
-dotenv.config();
-
 export const cookieExtractor = (req) => {
   const token =
     req && req.cookies ? req.cookies[process.env.COOKIE_TOKEN] : null;
 
   return token;
+};
+
+export const passportCall = (strategy) => {
+  return async (req, res, next) => {
+    passport.authenticate(strategy, (err, user, info) => {
+      if (err) return next();
+      if (!user) return res.status(400).render("error", { error: info });
+
+      req.user = user;
+      next();
+    })(req, res, next);
+  };
 };

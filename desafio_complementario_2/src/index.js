@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import __dirname from "./utils.js";
 import productsRouter from "./routes/products.routes.js";
 import cartRouter from "./routes/carts.routes.js";
+import userRouter from "./routes/users.routes.js";
 
 //const and env variables
 dotenv.config();
@@ -31,6 +32,8 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 //routers
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartRouter);
+app.use("/", userRouter);
+app.use("/", viewsRouter);
 
 //app.listen
 app.listen(PORT, () => {
