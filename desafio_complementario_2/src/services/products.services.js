@@ -19,12 +19,12 @@ class ProductsServices {
         query === "women's clothings" ||
         query === "electronics"
       ) {
-        const prodcuts = await productsModel.paginate(
+        const products = await productsModel.paginate(
           { category: query },
           options
         );
 
-        return prodcuts;
+        return products;
       }
       const products = await productsModel.paginate({}, options);
 
@@ -36,7 +36,7 @@ class ProductsServices {
 
   getProductById = async (pid) => {
     try {
-      const product = await productsModel.findById({ _id: pid });
+      const product = await productsModel.findById({ _id: pid }).lean();
 
       if (!product) {
         throw new Error("Product Not Found");

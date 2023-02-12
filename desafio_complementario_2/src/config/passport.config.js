@@ -5,6 +5,7 @@ import passportLocal from "passport-local";
 import UserService from "../services/users.services.js";
 import { cookieExtractor } from "../utils/jwt.js";
 import dotenv from "dotenv";
+import userModel from "../models/users.model.js";
 dotenv.config();
 
 const JwtStrategy = passportJwt.Strategy;
@@ -20,7 +21,7 @@ const initializePassport = () => {
         passReqToCallback: true,
         usernameField: "email",
       },
-      registerUser(req, username, password, done)
+      (req, username, password, done) => registerUser(req, username, password, done)
     )
   );
 
@@ -30,7 +31,7 @@ const initializePassport = () => {
       {
         usernameField: "email",
       },
-      loginUser(username, password, done)
+      (username, password, done) => loginUser(username, password, done)
     )
   );
 
@@ -43,6 +44,8 @@ const initializePassport = () => {
       },
       async (jwt_payload, done) => {
         try {
+          console.log(jwt_payload);
+
           return done(null, jwt_payload);
         } catch (error) {
           console.log(error);
@@ -58,7 +61,7 @@ const initializePassport = () => {
   });
 
   passport.deserializeUser(async (id, done) => {
-    const user = await UserModel.findById(id);
+    const user = await userModel.findById(id);
 
     done(null, user);
   });

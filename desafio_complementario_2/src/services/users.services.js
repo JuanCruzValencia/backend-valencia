@@ -2,6 +2,16 @@ import userModel from "../models/users.model.js";
 import { generateToken } from "../utils/jwt.js";
 
 class UserServices {
+  finAll = async () => {
+    try {
+      const users = await userModel.find().lean().exec();
+
+      return users;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   findUser = async (email) => {
     try {
       const user = await userModel.findOne({ email }).lean().exec();
@@ -49,8 +59,8 @@ class UserServices {
       }
 
       const verifyPassword = await userModel.comparePassword(
-        user.password,
-        password
+        password,
+        user.password
       );
 
       if (!verifyPassword) {

@@ -11,8 +11,10 @@ export const generateToken = (user) => {
   return token;
 };
 
-export const authToekn = (req, res, next) => {
-  const authCookie = req.cookies.process.env.COOKIE;
+export const authToken = (req, res, next) => {
+  const cookieName = process.env.COOKIE_NAME;
+
+  const authCookie = req.cookies[cookieName];
 
   if (!authCookie) {
     return res.status(401).send({
@@ -20,9 +22,7 @@ export const authToekn = (req, res, next) => {
     });
   }
 
-  const token = authHeader.split(" ")[1];
-
-  jwt.verify(token, process.env.JWT_SECRET, (error, credentials) => {
+  jwt.verify(authCookie, process.env.JWT_SECRET, (error, credentials) => {
     if (error) {
       return res.status(403).send({
         error: "Not Authorized",
@@ -37,7 +37,7 @@ export const authToekn = (req, res, next) => {
 
 export const cookieExtractor = (req) => {
   const token =
-    req && req.cookies ? req.cookies[process.env.COOKIE_TOKEN] : null;
+    req && req.cookies ? req.cookies[process.env.COOKIE_NAME] : null;
 
   return token;
 };
@@ -49,6 +49,7 @@ export const passportCall = (strategy) => {
       if (!user) return res.status(400).render("error", { error: info });
 
       req.user = user;
+
       next();
     })(req, res, next);
   };
