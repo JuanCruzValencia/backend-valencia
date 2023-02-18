@@ -1,9 +1,31 @@
-//LOGICA DE LAS RUTAS DE LOS USUARIOS
+import express from "express";
+import passport from "passport";
+import {
+  getLogin,
+  getLogout,
+  getRegister,
+  postLogin,
+  postRegister,
+} from "../controllers/users.controllers.js";
 
-//REGISTER POST
+const Router = express.Router();
 
-//LOGIN POST
+Router.get("/register", getRegister);
 
-//REGISTER GET
+Router.get("/login", getLogin);
 
-//LOGIN GET
+Router.post(
+  "/register",
+  passport.authenticate("register", { failureRedirect: "/error" }),
+  postRegister
+);
+
+Router.post(
+  "/login",
+  passport.authenticate("login", { failureRedirect: "/error" }),
+  postLogin
+);
+
+Router.get("/logout", getLogout);
+
+export default Router;

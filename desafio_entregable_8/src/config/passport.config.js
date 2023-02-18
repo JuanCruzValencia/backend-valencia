@@ -2,13 +2,16 @@
 import passport from "passport";
 import passportJwt from "passport-jwt";
 import passportLocal from "passport-local";
-import { authToekn, generateToken, cookieExtractor } from "../utils/jwt.js";
+import UserService from "../services/users.services.js";
+import { cookieExtractor } from "../utils/jwt.js";
 import dotenv from "dotenv";
+import userModel from "../models/users.model.js";
 dotenv.config();
 
 const JwtStrategy = passportJwt.Strategy;
 const JwtExtractor = passportJwt.ExtractJwt;
 const LocalStrategy = passportLocal.Strategy;
+const { registerUser, loginUser } = UserService;
 
 const initializePassport = () => {
   passport.use(
@@ -18,14 +21,17 @@ const initializePassport = () => {
         passReqToCallback: true,
         usernameField: "email",
       },
-      async (req, username, password, done) => {
-        try {
-        } catch (error) {
-          console.log(error);
+      (req, username, password, done) => registerUser(req, username, password, done)
+    )
+  );
 
-          return done(error);
-        }
-      }
+  passport.use(
+    "login",
+    new LocalStrategy(
+      {
+        usernameField: "email",
+      },
+      (username, password, done) => loginUser(username, password, done)
     )
   );
 
@@ -38,6 +44,8 @@ const initializePassport = () => {
       },
       async (jwt_payload, done) => {
         try {
+          console.log(jwt_payload);
+
           return done(null, jwt_payload);
         } catch (error) {
           console.log(error);
@@ -53,7 +61,7 @@ const initializePassport = () => {
   });
 
   passport.deserializeUser(async (id, done) => {
-    const user = await UserModel.findById(id);
+    const user = await userModel.findById(id);
 
     done(null, user);
   });
