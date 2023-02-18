@@ -1,5 +1,5 @@
-import userModel from "../models/users.model.js";
-import { generateToken } from "../utils/jwt.js";
+import userModel from "../../models/users.model.js";
+import { generateToken } from "../../utils/jwt.js";
 
 class UserServices {
   finAll = async () => {

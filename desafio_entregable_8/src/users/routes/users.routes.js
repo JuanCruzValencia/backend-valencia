@@ -6,7 +6,7 @@ import {
   getRegister,
   postLogin,
   postRegister,
-} from "../controllers/users.controllers.js";
+} from "../controller/users.controllers.js";
 
 const Router = express.Router();
 

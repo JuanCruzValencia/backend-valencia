@@ -4,7 +4,7 @@ import {
   getErrorPage,
   getOneProduct,
 } from "../controllers/views.controller.js";
-import { passportCall } from "../utils/jwt.js";
+import { passportCall } from "../../utils/jwt.js";
 
 const Router = express.Router();
 

@@ -1,5 +1,5 @@
-import { ProductsService } from "../services/products.services.js";
-import UserService from "../services/users.services.js";
+import { ProductsService } from "../../products/services/products.services.js";
+import UserService from "../../users/services/users.services.js";
 
 export const getAllProducts = async (req, res) => {
   try {

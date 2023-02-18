@@ -2,7 +2,7 @@
 import passport from "passport";
 import passportJwt from "passport-jwt";
 import passportLocal from "passport-local";
-import UserService from "../services/users.services.js";
+import UserService from "../users/services/users.services.js";
 import { cookieExtractor } from "../utils/jwt.js";
 import dotenv from "dotenv";
 import userModel from "../models/users.model.js";
