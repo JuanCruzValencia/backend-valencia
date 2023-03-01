@@ -16,8 +16,6 @@ export const getAllProducts = async (req, res) => {
 
     const user = req.session.user;
 
-    // console.log(user);
-
     res.render("home", {
       style: "styles.css",
       response,
@@ -38,11 +36,6 @@ export const getOneProduct = async (req, res) => {
       style: "styles.css",
       response,
     });
-  } catch (error) {}
-};
-
-export const getCart = (req, res) => {
-  try {
   } catch (error) {}
 };
 
@@ -70,3 +63,16 @@ export const getErrorPage = (req, res) => {
     console.log(error);
   }
 };
+
+export const getCartPage = async (req, res) => {
+  try {
+    const {cid} = req.params
+
+    const result = await getCartById(cid)
+    res.render("cart", {
+      cart: result
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
