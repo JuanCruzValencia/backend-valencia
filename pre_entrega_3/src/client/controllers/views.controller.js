@@ -16,6 +16,8 @@ export const getAllProducts = async (req, res) => {
 
     const user = req.session.user;
 
+    // console.log(user);
+
     res.render("home", {
       style: "styles.css",
       response,

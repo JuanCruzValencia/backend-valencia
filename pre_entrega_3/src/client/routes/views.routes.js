@@ -14,7 +14,7 @@ Router.get("/products/:pid", passportCall("jwt"), getOneProduct);
 
 Router.get("/error", getErrorPage);
 
-Router.get("carts/:cid");
+Router.get("carts/:cid"); //HACER LOGICA PARA VER EL CARRITO
 
 Router.get("/admin");
 
