@@ -66,13 +66,13 @@ export const getErrorPage = (req, res) => {
 
 export const getCartPage = async (req, res) => {
   try {
-    const {cid} = req.params
+    const { cid } = req.params;
 
-    const result = await getCartById(cid)
+    const result = await getCartById(cid);
     res.render("cart", {
-      cart: result
-    })
+      cart: result,
+    });
   } catch (error) {
     console.log(error);
   }
-}
+};
