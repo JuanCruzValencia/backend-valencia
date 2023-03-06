@@ -34,9 +34,11 @@ export const getCarts = async (req, res) => {
 
 export const getCartById = async (req, res) => {
   try {
-    const { pid } = req.params;
+    const { cid } = req.params;
 
-    const result = await CartServices.getCartById(pid);
+    const result = await CartServices.getCartById(cid);
+
+    console.log(result);
 
     return res.status(200).send({
       payload: result,

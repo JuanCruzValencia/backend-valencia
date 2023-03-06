@@ -17,7 +17,7 @@ Router.get("/products/:pid", passportCall("jwt"), getOneProduct);
 
 Router.get("/error", getErrorPage);
 
-Router.get("carts/:cid", getCartPage); //Si no hay carrito que se renderize una alternativa
+Router.get("/carts/:cid", getCartPage); //Si no hay carrito que se renderize una alternativa
 
 Router.get("/admin"); //admin por ahora no tiene una vista
 

@@ -31,6 +31,9 @@ class CartsServices {
         .populate("carts.product")
         .lean();
 
+      console.log(cart);
+      
+
       if (!cart) throw new Error("Cart Not Found");
 
       return cart;
@@ -57,7 +60,7 @@ class CartsServices {
           }
         );
 
-        return result
+        return result;
       }
 
       const result = await cartsModel.updateOne(

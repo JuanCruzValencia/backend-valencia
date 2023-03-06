@@ -1,5 +1,7 @@
 //eliminando productos desde el front
-const deleteBtns = document.querySelectorAll("#cart__product--deleteBtn");
+const deleteBtns = Array.from(
+  document.querySelectorAll("#cart__product--deleteBtn")
+);
 
 const deleteProduct = async (cid, pid) => {
   try {
@@ -12,7 +14,6 @@ const deleteProduct = async (cid, pid) => {
     if (result.status === "succes") {
       alert("Producto eliminado correctamente");
     }
-
   } catch (error) {
     console.log(error);
   }

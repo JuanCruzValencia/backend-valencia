@@ -1,6 +1,7 @@
 // agregando productos desde el front
 const addToCartBtn = document.getElementById("addProduct__btn");
 const pid = addToCartBtn.value;
+const cart_id = document.getElementById("cart_id").value;
 
 const addToCart = async (cid, pid) => {
   try {
@@ -22,5 +23,5 @@ const addToCart = async (cid, pid) => {
 };
 
 addToCartBtn.addEventListener("click", () => {
-  addToCart("63c5494987fcf899bff4f698", pid);
+  addToCart(cart_id, pid);
 });

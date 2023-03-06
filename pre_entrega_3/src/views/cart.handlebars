@@ -2,19 +2,26 @@
   <div class="cart__container">
     <h2>Carrito:</h2>
     {{#if cart}}
-    {{#each cart}}
-      <div class="cart__products">
-        <div class="product__card">
-          <img src={{this.product.thumbnail}} alt="product__image" />
-          <div class="product__card--info">
-            <h4>{{this.product.title}}</h4>
-            <h5>${{this.product.price}}</h5>
-            <p>x{{this.quantity}}</p>
+      {{#each cart}}
+        <div class="cart__products">
+          <div class="product__card">
+            <img src={{this.product.thumbnail}} alt="product__image" />
+            <div class="product__card--info">
+              <h4>{{this.product.title}}</h4>
+              <h5>${{this.product.price}}</h5>
+              <p>x{{this.quantity}}</p>
+            </div>
           </div>
+          <button
+            class="cart__deleteBtn"
+            id="cart__product--deleteBtn"
+            value={{this.product._id}}
+          >Eliminar</button>
         </div>
-        <button class="cart__deleteBtn" id="cart__product--deleteBtn" value={{this.product._id}}>Eliminar</button>
-      </div>
-    {{/each}}
+      {{/each}}
+    {{else}}
+      <h3>El carrito se encuentra vacio</h3>
+    {{/if}}
     <div class="cart__total">
       <h2>Total:</h2>
       <div class="cart__menu">
@@ -22,8 +29,6 @@
         <button class="cart__total--btn">confirmar compra</button>
       </div>
     </div>
-    {{else}}
-    <h3>El carrito se encuentra vacio</h3>
   </div>
 </main>
 <script src="/js/cart.js"></script>

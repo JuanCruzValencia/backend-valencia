@@ -34,13 +34,7 @@ export const postLogin = (req, res) => {
     return res.status(400).render("error", { error: "Invalid credentials" });
   }
 
-  req.session.user = {
-    first_name: req.user.first_name,
-    last_name: req.user.last_name,
-    email: req.user.email,
-    age: req.user.age,
-    role: req.user.role,
-  };
+  req.session.user = req.user;
 
   res.cookie(process.env.COOKIE_NAME, req.user.token).redirect("/products");
 };
