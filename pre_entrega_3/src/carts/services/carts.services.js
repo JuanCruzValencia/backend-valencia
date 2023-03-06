@@ -32,7 +32,6 @@ class CartsServices {
         .lean();
 
       console.log(cart);
-      
 
       if (!cart) throw new Error("Cart Not Found");
 
@@ -147,6 +146,23 @@ class CartsServices {
         { _id: cid },
         { $set: { carts: [] } }
       );
+
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  purchaseProducts = async (cid) => {
+    try {
+      //obtener las cantidad de cada producto
+      const cart = await this.getCartById(cid);
+      if (!cart) throw new Error("Cart Not Found");
+      //obtener la cantidad de stock
+      //comparar cantidades
+      //si hay stock restar y eliminar del carrito
+      //si no hay que permanezca en el carrito
+      //devolver el ticket con los productos adquiridos
     } catch (error) {
       console.log(error);
     }
