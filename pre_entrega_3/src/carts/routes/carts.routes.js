@@ -9,7 +9,7 @@ import {
   getCartById,
   getCarts,
   updateProductQuantity,
-  pruchaseCart,
+  purchaseCart,
 } from "../controller/carts.controller.js";
 
 const Router = express.Router();
