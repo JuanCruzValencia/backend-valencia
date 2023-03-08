@@ -74,7 +74,9 @@ export const getCartPage = async (req, res) => {
 
     const user = req.session.user;
 
-    const result = await CartServices.getCartById(cid);
+    const result = await CartServices.getCartById(cid)
+
+    console.log(result);
     res.render("cart", {
       cart: result,
       user,

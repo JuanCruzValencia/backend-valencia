@@ -32,9 +32,10 @@ class CartsServices {
       const cart = await cartsModel
         .findById({ _id: cid })
         .populate("carts.product")
-        .lean();
+        .lean()
+        .exec();
 
-      console.log(cart);
+      console.log(cart.carts[0]); //ok
 
       if (!cart) throw new Error("Cart Not Found");
 
