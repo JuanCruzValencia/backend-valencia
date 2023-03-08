@@ -194,7 +194,7 @@ class CartsServices {
 
   removeProductFromStock = async (cid, products) => {
     try {
-      let productsToPurchase = 0;
+      let total = 0;
 
       products.forEach(async (product) => {
         const pid = product.product._id;
@@ -202,15 +202,11 @@ class CartsServices {
         if (ProductsService.updateStock(pid, product.quantity)) {
           await this.deleteProductFromCart(cid, pid);
 
-          const result = await ProductsService.getProductById(pid);
-
-          const totalQuantity = result.price * product.quantity;
-
-          productsToPurchase = productsToPurchase + totalQuantity;
+          total = total + product.product.price;
         }
       });
 
-      return productsToPurchase;
+      return total;
     } catch (error) {
       console.log(error);
     }
