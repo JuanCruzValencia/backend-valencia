@@ -72,7 +72,9 @@ export const authPolicies = (policies) => (req, res, next) => {
   const role = req.user.role;
 
   if (role !== policies)
-    return res.status(400).render("error", { error: "Not Authorized" });
+    return res.status(403).send({
+      error: "Not Authorized",
+    });
 
   next();
 };
