@@ -167,11 +167,9 @@ class CartsServices {
 
       const total = await this.removeProductFromStock(cid, products);
 
-      console.log(total);
-
-      const ticket = await this.generateTicket(purchaser.email, total);
-
-      console.log(ticket);
+      const reduceTotal = total.reduce((acc, curr) => acc + curr, 0);
+      
+      const ticket = await this.generateTicket(purchaser.email, reduceTotal);
 
       return ticket;
     } catch (error) {
@@ -194,19 +192,24 @@ class CartsServices {
 
   removeProductFromStock = async (cid, products) => {
     try {
-      let total = 0;
+      const totalProducts = Promise.all(
+        products.map(async (product) => {
+          const productWithStock = await ProductsService.updateStock(
+            product.product._id,
+            product.quantity
+          );
 
-      products.forEach(async (product) => {
-        const pid = product.product._id;
+          if (productWithStock) {
+            await this.deleteProductFromCart(cid, product.product._id);
 
-        if (ProductsService.updateStock(pid, product.quantity)) {
-          await this.deleteProductFromCart(cid, pid);
+            return product.product.price * product.quantity;
+          }
 
-          total = total + product.product.price;
-        }
-      });
+          return 0
+        })
+      );
 
-      return total;
+      return totalProducts;
     } catch (error) {
       console.log(error);
     }
