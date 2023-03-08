@@ -35,8 +35,6 @@ class CartsServices {
         .lean()
         .exec();
 
-      console.log(cart.carts[0]); //ok
-
       if (!cart) throw new Error("Cart Not Found");
 
       return cart;
@@ -159,26 +157,21 @@ class CartsServices {
 
   purchaseProducts = async (cid) => {
     try {
-      const productsToPurchase = [];
-      //obtener las cantidad de cada producto
       const cart = await this.getCartById(cid);
+
       if (!cart) throw new Error("Cart Not Found");
-      //obtener la cantidad de stock
+
       const products = Array.from(cart.carts);
-      //comparar cantidades
-      products.forEach(async (product) => {
-        if (ProductsService.updateProduct(product)) {
-          await this.deleteProductFromCart(product.product);
-          const result = await ProductsService.getProductById(product.product);
-          productsToPurchase.push(result.price);
-        }
-      });
-      //si hay stock restar y eliminar del carrito
-      //si no hay que permanezca en el carrito
+
       const purchaser = await userModel.findOne({ cart: cid }).lean().exec();
-      //devolver el ticket con los productos adquiridos
-      const total = productsToPurchase.reduce((acc, cur) => acc + cur);
+
+      const total = await this.removeProductFromStock(cid, products);
+
+      console.log(total);
+
       const ticket = await this.generateTicket(purchaser.email, total);
+
+      console.log(ticket);
 
       return ticket;
     } catch (error) {
@@ -194,6 +187,30 @@ class CartsServices {
       });
 
       return result;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  removeProductFromStock = async (cid, products) => {
+    try {
+      const productsToPurchase = [];
+
+      products.forEach(async (product) => {
+        const pid = product.product._id;
+
+        if (ProductsService.updateProduct(pid, product.quantity)) {
+          await this.deleteProductFromCart(cid, pid);
+
+          const result = await ProductsService.getProductById(pid);
+
+          const totalQuantity = result.price * product.quantity;
+
+          productsToPurchase.push(totalQuantity);
+        }
+      });
+      
+      return productsToPurchase;
     } catch (error) {
       console.log(error);
     }

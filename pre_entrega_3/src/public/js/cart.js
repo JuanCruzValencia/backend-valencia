@@ -10,7 +10,7 @@ const deleteProduct = async (cid, pid) => {
 
     const result = await response.json();
 
-    if (result.status === "success") {
+    if (response.status === 200) {
       alert("Producto eliminado correctamente");
     }
   } catch (error) {
@@ -18,9 +18,7 @@ const deleteProduct = async (cid, pid) => {
   }
 };
 
-const cartId = document.getElementById("purchase__btn").value;
-
-console.log(cartId);
+const cid = document.getElementById("purchase__btn").value;
 
 deleteBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -33,20 +31,29 @@ deleteBtns.forEach((btn) => {
 
 const purchaseBtn = document.getElementById("purchase__btn");
 
-purchaseBtn.addEventListener("click", () => purchaseCart);
+purchaseBtn.addEventListener("click", () => {
+  purchaseCart(cid);
+});
 
 const purchaseCart = async (cid) => {
   try {
-    const response = await fetch(`carts/${cid}/purchase`, {
+    const response = await fetch(`/carts/${cid}/purchase`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     const result = await response.json();
 
-    if (result.status === "success") {
-      alert(`Compra realizada con exito con el ticket n`);
+    console.log(result);
+
+    if (response.status === 200) {
+      alert(`Compra realizada con exito con el ticket ${result.payload.code}`);
     }
   } catch (error) {
     console.log(error);
   }
 };
+
+//funcion para vaciar el carrito

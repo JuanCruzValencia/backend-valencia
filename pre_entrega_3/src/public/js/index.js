@@ -1,22 +1,9 @@
 const socket = io();
-
-let user = "";
+const user = document.getElementById("user__name").innerHTML;
 const chatbox = document.getElementById("user__input");
 const messagesContainer = document.getElementById("messages__container");
 
-// modal para que el usuario se autentifique
-Swal.fire({
-  title: "Ingrese su email",
-  input: "text",
-  inputValidator: (value) => {
-    return !value && "Debe ingresar su email";
-  },
-  icon: "success",
-  allowOutsideClick: false,
-}).then((result) => {
-  user = result.value;
-  socket.emit("auth", user);
-});
+socket.emit("auth", user);
 
 // capto el evento cuando el usuario hace enter
 chatbox.addEventListener("keyup", (event) => {
