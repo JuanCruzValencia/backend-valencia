@@ -1,8 +1,8 @@
 import { ERRORS_ENUM } from "../../consts/ERRORS.js";
 import CustomError from "../../errors/customError.js";
+import { generateProductErrorInfo } from "../../errors/infoError.js";
 import { ProductsService } from "../services/products.services.js";
 
-//buscar todos los producto
 export const getAllProductsCtr = async (req, res) => {
   try {
     const { query, limit, sort, page } = req.query;
@@ -17,7 +17,9 @@ export const getAllProductsCtr = async (req, res) => {
     const result = await ProductsService.getAllProducts(query, options);
 
     if (!result) {
-      throw new CustomError(ERRORS_ENUM["PRODUCT NOT FOUND"]);
+      CustomError.createError({
+        message: ERRORS_ENUM["PRODUCT NOT FOUND"],
+      });
     }
 
     return res.status(200).send({
@@ -37,13 +39,10 @@ export const getAllProductsCtr = async (req, res) => {
         : null,
     });
   } catch (error) {
-    console.log(error);
-
-    return res.status(400).send("Something went wrong");
+    return res.status(400).send({ status: error.name, message: error.message });
   }
 };
 
-//buscar un prodcuto por id
 export const getProductByIdCtr = async (req, res) => {
   try {
     const { pid } = req.params;
@@ -52,7 +51,6 @@ export const getProductByIdCtr = async (req, res) => {
 
     if (!result) {
       CustomError.createError({
-        name: ERRORS_ENUM["PRODUCT NOT FOUND"],
         message: ERRORS_ENUM["PRODUCT NOT FOUND"],
       });
     }
@@ -61,41 +59,39 @@ export const getProductByIdCtr = async (req, res) => {
       payload: result,
     });
   } catch (error) {
-    console.log(error);
-
-    if (error.name === ERRORS_ENUM["PRODUCT NOT FOUND"]) {
-      CustomError.createError({
-        name: ERRORS_ENUM["PRODUCT NOT FOUND"],
-        message: ERRORS_ENUM["PRODUCT NOT FOUND"],
-      });
-    }
-
-    return res.status(400).send(`${error}`);
+    return res.status(400).send({ status: error.name, message: error.message });
   }
 };
 
-//agregar un prodcuto a la base de datos
 export const addNewProductCtr = async (req, res) => {
   try {
     const newProduct = req.body;
 
+    const { title, price, description, code, category } = newProduct;
+
+    if (!title || !price || !description || !code || !category) {
+      CustomError.createError({
+        name: ERRORS_ENUM["INVALID PRODUCT PROPERTY"],
+        message: generateProductErrorInfo(newProduct),
+      });
+    }
+
     const result = await ProductsService.addNewProduct(newProduct);
 
     if (!result) {
-      throw new CustomError(ERRORS_ENUM["INVALID PRODUCT PROPERTY"]);
+      CustomError.createError({
+        message: ERRORS_ENUM["INVALID PRODUCT PROPERTY"],
+      });
     }
 
     return res.status(201).send({
       payload: result,
     });
   } catch (error) {
-    console.log(error);
-
-    return res.status(400).send("Something went wrong");
+    return res.status(400).send({ status: error.name, message: error.message });
   }
 };
 
-//modificar un producto
 export const updateProductCtr = async (req, res) => {
   try {
     const { pid } = req.params;
@@ -104,30 +100,19 @@ export const updateProductCtr = async (req, res) => {
     const result = await ProductsService.updateProduct(pid, newProduct);
 
     if (!result) {
-      CustomError.createError(
-        ERRORS_ENUM["PRODUCT NOT FOUND"],
-        ERRORS_ENUM["PRODUCT NOT FOUND"]
-      );
+      CustomError.createError({
+        message: ERRORS_ENUM["PRODUCT NOT FOUND"],
+      });
     }
 
     return res.status(202).send({
       payload: result,
     });
   } catch (error) {
-    console.log(error);
-
-    if (error.name === ERRORS_ENUM["PRODUCT NOT FOUND"]) {
-      CustomError.createError(
-        ERRORS_ENUM["PRODUCT NOT FOUND"],
-        ERRORS_ENUM["PRODUCT NOT FOUND"]
-      );
-    }
-
-    return res.status(400).send("Something went wrong");
+    return res.status(400).send({ status: error.name, message: error.message });
   }
 };
 
-//eliminar un producto
 export const deleteProductCtr = async (req, res) => {
   try {
     const { pid } = req.params;
@@ -135,18 +120,15 @@ export const deleteProductCtr = async (req, res) => {
     const result = await ProductsService.deleteProduct(pid);
 
     if (!result) {
-      CustomError.createError(
-        ERRORS_ENUM["PRODUCT NOT FOUND"],
-        ERRORS_ENUM["PRODUCT NOT FOUND"]
-      );
+      CustomError.createError({
+        message: ERRORS_ENUM["PRODUCT NOT FOUND"],
+      });
     }
 
     return res.status(202).send({
       payload: result,
     });
   } catch (error) {
-    console.log(error);
-
-    return res.status(400).send("Something went wrong");
+    return res.status(400).send({ status: error.name, message: error.message });
   }
 };

@@ -40,7 +40,9 @@ export const getOneProduct = async (req, res) => {
       response,
       user,
     });
-  } catch (error) {}
+  } catch (error) {
+    res.render("error");
+  }
 };
 
 export const getAdmin = async (req, res) => {
@@ -57,7 +59,9 @@ export const getAdmin = async (req, res) => {
     }
 
     return res.redirect("/home/products");
-  } catch (error) {}
+  } catch (error) {
+    res.render("error");
+  }
 };
 
 export const getErrorPage = (req, res) => {
@@ -74,7 +78,7 @@ export const getCartPage = async (req, res) => {
 
     const user = req.session.user;
 
-    const result = await CartServices.getCartById(cid)
+    const result = await CartServices.getCartById(cid);
 
     res.render("cart", {
       cart: result,
@@ -82,5 +86,6 @@ export const getCartPage = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    res.render("error");
   }
 };

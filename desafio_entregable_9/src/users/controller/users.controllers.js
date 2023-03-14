@@ -6,6 +6,7 @@ export const getRegister = (req, res) => {
     res.render("register");
   } catch (error) {
     console.log(error);
+    res.render("error");
   }
 };
 
@@ -14,6 +15,7 @@ export const getLogin = (req, res) => {
     res.render("login");
   } catch (error) {
     console.log(error);
+    res.render("error");
   }
 };
 
@@ -46,5 +48,6 @@ export const getCurrentUser = (req, res) => {
     res.status(200).render("session", { styles: "style.css", user });
   } catch (error) {
     console.log(error);
+    res.render("error");
   }
 };
