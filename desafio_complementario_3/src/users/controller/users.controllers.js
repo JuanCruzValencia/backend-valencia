@@ -1,4 +1,7 @@
 import dotenv from "dotenv";
+import { ERRORS_ENUM } from "../../consts/ERRORS";
+import CustomError from "../../errors/customError";
+import UserService from "../services/users.services";
 dotenv.config();
 
 export const getRegister = (req, res) => {
@@ -56,7 +59,37 @@ export const getCurrentUser = (req, res) => {
     res.status(200).render("session", { styles: "style.css", user });
   } catch (error) {
     req.logger.error(error);
-    
+
+    res.render("error");
+  }
+};
+
+export const getRestore = (req, res) => {
+  try {
+    res.render("restore");
+  } catch (error) {
+    req.logger.error(error);
+
+    res.render("error");
+  }
+};
+
+export const postRestore = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const result = await UserService.restorePassword(email, password);
+
+    if (!result) {
+      CustomError.createError({
+        message: ERRORS_ENUM["USER NOT FOUND"],
+      });
+    }
+
+    res.status(200).redirect("login");
+  } catch (error) {
+    req.logger.error(error);
+
     res.render("error");
   }
 };

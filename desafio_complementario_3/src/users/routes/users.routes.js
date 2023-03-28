@@ -4,8 +4,10 @@ import {
   getLogin,
   getLogout,
   getRegister,
+  getRestore,
   postLogin,
   postRegister,
+  postRestore,
 } from "../controller/users.controllers.js";
 
 const Router = express.Router();
@@ -27,5 +29,9 @@ Router.post(
 );
 
 Router.get("/logout", getLogout);
+
+Router.get("/restore", getRestore);
+
+Router.post("/restore", postRestore);
 
 export default Router;

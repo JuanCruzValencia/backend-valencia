@@ -1,4 +1,6 @@
 import { CartServices } from "../../carts/services/carts.services.js";
+import { ERRORS_ENUM } from "../../consts/ERRORS.js";
+import CustomError from "../../errors/customError.js";
 import userModel from "../../models/users.model.js";
 import { generateToken } from "../../utils/jwt.js";
 import UserDto from "../dto/user.dto.js";
@@ -92,6 +94,49 @@ class UserServices {
 
   logoutUser = async () => {
     try {
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  sendRestoreMail = async (email) => {
+    try {
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  restorePassword = async (email, password) => {
+    try {
+      const user = await this.findUser(email);
+
+      if (!user) {
+        CustomError.createError({
+          message: ERRORS_ENUM["USER NOT FOUND"],
+        });
+      }
+
+      const verifyPassword = await userModel.comparePassword(
+        password,
+        user.password
+      );
+
+      if (verifyPassword) {
+        CustomError.createError({
+          message: "Can not use the last password, must bne a new one",
+        });
+      }
+
+      const result = await userModel.updateOne(
+        { _id: user._id },
+        { password: await userModel.encryptPassword(password) }
+      );
+
+      if (!result) {
+        return false;
+      }
+
+      return true;
     } catch (error) {
       console.log(error);
     }
