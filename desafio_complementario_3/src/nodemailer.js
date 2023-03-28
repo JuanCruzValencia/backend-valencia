@@ -2,11 +2,30 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const transport = nodemailer.createTransport({
-  service: "gmail",
-  port: 587,
-  auth: {
-    user: "jcvalenciaver@gmail.com",
-    pass: process.env.NODE_APP_PASSWORD,
-  },
-});
+class MailManager {
+  constructor() {
+    this.transport = nodemailer.createTransport({
+      service: "gmail",
+      port: 587,
+      auth: {
+        user: process.env.NODE_APP_EMAIL,
+        pass: process.env.NODE_APP_PASSWORD,
+      },
+    });
+  }
+
+  send = async (user, subject, text) => {
+    const result = await this.transport.sendMail({
+      from: process.env.NODE_APP_EMAIL,
+      to: user.email,
+      subject,
+      text: text,
+    });
+
+    return result;
+  };
+}
+
+const sendMail = new MailManager();
+
+export default sendMail;

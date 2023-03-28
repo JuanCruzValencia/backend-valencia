@@ -1,8 +1,10 @@
 import { CartServices } from "../../carts/services/carts.services.js";
 import { ERRORS_ENUM } from "../../consts/ERRORS.js";
 import CustomError from "../../errors/customError.js";
+import tokenModel from "../../models/token.model.js";
 import userModel from "../../models/users.model.js";
-import { generateToken } from "../../utils/jwt.js";
+import sendMail from "../../nodemailer.js";
+import { generateCode } from "../../utils.js";
 import UserDto from "../dto/user.dto.js";
 
 class UserServices {
@@ -92,14 +94,49 @@ class UserServices {
     }
   };
 
-  logoutUser = async () => {
+  changeRole = async (uid) => {
     try {
+      const user = await userModel.findById({ _id: uid }).lean().exec();
+
+      if (!user) {
+        CustomError.createError({
+          message: ERRORS_ENUM["USER NOT FOUND"],
+        });
+      }
+
+      const result = userModel.updateOne(
+        { _id: uid },
+        { role: user.role === "USER" ? "PREMIUM" : "USER" }
+      );
+
+      if (!result) return false;
+
+      return true;
     } catch (error) {
       console.log(error);
     }
   };
 
   sendRestoreMail = async (email) => {
+    const user = await this.findUser(email);
+
+    if (!user)
+      return res.status(400).send("user with given email doesn't exist");
+
+    let token = await tokenModel.findOne({ userId: user._id });
+
+    if (!token) {
+      token = await new tokenModel({
+        userId: user._id,
+        token: generateCode(),
+      }).save();
+    }
+
+    const link = `${process.env.BASE_URL}/restoreForm/${user._id}/${token.token}`;
+
+    await sendMail.send(user.email, "Password reset", link);
+
+    res.status(200).send("password reset link sent to your email account");
     try {
     } catch (error) {
       console.log(error);

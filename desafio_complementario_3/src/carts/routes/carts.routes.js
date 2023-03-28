@@ -24,7 +24,12 @@ Router.post("/cid", addArrayOfProducts);
 
 Router.delete("/:cid", emptyCart);
 
-Router.post("/:cid/product/:pid", authToken, authPolicies("USER"), addProductToCart);
+Router.post(
+  "/:cid/product/:pid",
+  authToken,
+  authPolicies("USER", "PREMIUM"),
+  addProductToCart
+);
 
 Router.put("/:cid/product/:pid", updateProductQuantity);
 

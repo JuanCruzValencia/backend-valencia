@@ -83,9 +83,13 @@ class ProductsServices {
     }
   };
 
-  deleteProduct = async (pid) => {
+  deleteProduct = async (pid, role) => {
     try {
       const product = await this.getProductById(pid);
+
+      if (role !== "ADMIN" || product.owner !== role) {
+        throw new Error("Not Authorized");
+      }
 
       if (!product) {
         throw new Error("Product Not Found");

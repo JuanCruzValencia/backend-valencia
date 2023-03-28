@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
-import { ERRORS_ENUM } from "../../consts/ERRORS";
-import CustomError from "../../errors/customError";
-import UserService from "../services/users.services";
+import { ERRORS_ENUM } from "../../consts/ERRORS.js";
+import CustomError from "../../errors/customError.js";
+import UserService from "../services/users.services.js";
 dotenv.config();
 
 export const getRegister = (req, res) => {
@@ -76,6 +76,39 @@ export const getRestore = (req, res) => {
 
 export const postRestore = async (req, res) => {
   try {
+    const { email } = req.body;
+
+    const result = await UserService.sendRestoreMail(email);
+
+    if (!result) {
+      CustomError.createError({
+        message: ERRORS_ENUM["USER NOT FOUND"],
+      });
+    }
+
+    res.status(200).redirect("login");
+  } catch (error) {
+    req.logger.error(error);
+
+    res.render("error");
+  }
+};
+
+export const getRestoreForm = (req, res) => {
+  try {
+    //logica para que renderize segun el token no hay expirado
+    //si expiro que vuelva a realizar el proceso
+    //sino que que pueda acceder a reestablecer contrasena
+    res.render("restoreForm");
+  } catch (error) {
+    req.logger.error(error);
+
+    res.render("error");
+  }
+};
+
+export const postRestoreForm = async (req, res) => {
+  try {
     const { email, password } = req.body;
 
     const result = await UserService.restorePassword(email, password);
@@ -87,6 +120,28 @@ export const postRestore = async (req, res) => {
     }
 
     res.status(200).redirect("login");
+  } catch (error) {
+    req.logger.error(error);
+
+    res.render("error");
+  }
+};
+
+export const changeUserRole = async (req, res) => {
+  try {
+    const { uid } = req.params;
+
+    const result = await UserService.changeRole(uid);
+
+    if (!result) {
+      CustomError.createError({
+        message: "Something went wrong",
+      });
+    }
+
+    res.status(200).send({
+      message: "User succesfully changed role",
+    });
   } catch (error) {
     req.logger.error(error);
 

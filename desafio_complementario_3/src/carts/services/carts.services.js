@@ -1,4 +1,5 @@
 import cartsModel from "../../models/carts.model.js";
+import { productsModel } from "../../models/products.model.js";
 import ticketModel from "../../models/ticket.model.js";
 import userModel from "../../models/users.model.js";
 import { ProductsService } from "../../products/services/products.services.js";
@@ -43,11 +44,18 @@ class CartsServices {
     }
   };
 
-  addProductToCart = async (cid, pid) => {
+  addProductToCart = async (cid, pid, role) => {
     try {
       const cart = await this.getCartById(cid);
 
       if (!cart) throw new Error("Cart Not Found");
+
+      const product = await productsModel.findById({ _pid: pid }).lean().exec();
+
+      if (!product) throw new Error("Product Not Found");
+
+      if (product.owner === "PREMIUM" && role === "PREMIUM")
+        throw new Error("Not Authorized");
 
       const findProduct = await cartsModel.findOne({ "carts.product": pid });
 

@@ -8,6 +8,8 @@ import {
   postLogin,
   postRegister,
   postRestore,
+  getRestoreForm,
+  postRestoreForm,
 } from "../controller/users.controllers.js";
 
 const Router = express.Router();
@@ -33,5 +35,9 @@ Router.get("/logout", getLogout);
 Router.get("/restore", getRestore);
 
 Router.post("/restore", postRestore);
+
+Router.get("/restoreForm/:uid/:token", getRestoreForm);
+
+Router.post("/restoreForm", postRestoreForm);
 
 export default Router;

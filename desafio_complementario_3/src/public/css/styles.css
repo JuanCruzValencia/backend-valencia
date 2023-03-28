@@ -427,3 +427,35 @@ p {
   display: flex;
   gap: 1rem;
 }
+
+/* RESTORE FORM */
+
+.restore__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.restore__input {
+  height: 30px;
+  padding: 0.3rem;
+  border-radius: 5px;
+}
+
+.restore__input::placeholder {
+  text-transform: uppercase;
+}
+
+.restore__btn {
+  height: 30px;
+  padding: 0 0.5rem;
+  border-radius: 5px;
+  background-color: #f49390;
+}
+
+.restore__btn:hover {
+  cursor: pointer;
+  background-color: #333;
+  color: #fff;
+  transition: 0.6s;
+}

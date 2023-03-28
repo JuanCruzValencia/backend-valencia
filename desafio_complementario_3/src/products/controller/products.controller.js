@@ -116,8 +116,9 @@ export const updateProductCtr = async (req, res) => {
 export const deleteProductCtr = async (req, res) => {
   try {
     const { pid } = req.params;
+    const role = req.session.user.role
 
-    const result = await ProductsService.deleteProduct(pid);
+    const result = await ProductsService.deleteProduct(pid, role);
 
     if (!result) {
       CustomError.createError({

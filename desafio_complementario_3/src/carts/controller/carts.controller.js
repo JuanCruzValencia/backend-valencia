@@ -61,8 +61,9 @@ export const getCartById = async (req, res) => {
 export const addProductToCart = async (req, res) => {
   try {
     const { cid, pid } = req.params;
+    const role = req.session.user.role
 
-    const result = await CartServices.addProductToCart(cid, pid);
+    const result = await CartServices.addProductToCart(cid, pid, role);
 
     if (!result) {
       CustomError.createError({

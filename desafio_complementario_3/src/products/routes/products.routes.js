@@ -17,12 +17,22 @@ Router.get("/", getAllProductsCtr);
 Router.get("/:pid", getProductByIdCtr);
 
 //agregar un producto a la base de datos
-Router.post("/", authToken, authPolicies("ADMIN"), addNewProductCtr);
+Router.post(
+  "/",
+  authToken,
+  authPolicies("ADMIN" || "PREMIUM"),
+  addNewProductCtr
+);
 
 //modificar un producto
 Router.put("/:pid", authToken, authPolicies("ADMIN"), updateProductCtr);
 
 //eliminar un producto
-Router.delete("/:pid", authToken, authPolicies("ADMIN"), deleteProductCtr);
+Router.delete(
+  "/:pid",
+  authToken,
+  authPolicies("ADMIN" || "PREMIUM"),
+  deleteProductCtr
+);
 
 export default Router;
