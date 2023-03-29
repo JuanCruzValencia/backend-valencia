@@ -48,7 +48,7 @@ class ProductsServices {
     }
   };
 
-  addNewProduct = async (newProduct) => {
+  addNewProduct = async (newProduct, user) => {
     try {
       const product = await productsModel.findOne({ code: newProduct.code });
 
@@ -56,7 +56,10 @@ class ProductsServices {
         throw new Error("Product Already Exist in DB");
       }
 
-      const addProduct = await productsModel.create(newProduct);
+      const addProduct = await productsModel.create({
+        ...newProduct,
+        owner: user._id,
+      });
 
       return addProduct;
     } catch (error) {
