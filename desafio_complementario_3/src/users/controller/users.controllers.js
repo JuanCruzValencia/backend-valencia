@@ -64,6 +64,26 @@ export const getCurrentUser = (req, res) => {
   }
 };
 
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await UserService.finAll();
+
+    if (!users) {
+      CustomError.createError({
+        message: "Db is empty",
+      });
+    }
+
+    res.status(200).send({
+      payload: users,
+    });
+  } catch (error) {
+    req.logger.error(error);
+
+    res.render("error");
+  }
+};
+
 export const getRestore = (req, res) => {
   try {
     res.render("restore");
@@ -92,24 +112,36 @@ export const postRestore = async (req, res) => {
   }
 };
 
-export const getRestoreForm = (req, res) => {
+export const getRestoreForm = async (req, res) => {
   try {
-    //logica para que renderize segun el token no hay expirado
-    //si expiro que vuelva a realizar el proceso
-    //sino que que pueda acceder a reestablecer contrasena
+    const { uid, token } = req.params;
+
+    const user = await UserService.findUserById(uid);
+
+    if (!user) {
+      CustomError.createError({
+        message: ERRORS_ENUM["USER NOT FOUND"],
+      });
+
+      return res.redirect("restore");
+    }
+
+    const userToken = await UserService.findUserToken(uid, token);
+
     res.render("restoreForm");
   } catch (error) {
     req.logger.error(error);
 
-    res.render("error");
+    res.redirect("restore");
   }
 };
 
 export const postRestoreForm = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { password } = req.body;
+    const { uid, token } = req.params;
 
-    const result = await UserService.restorePassword(email, password);
+    const result = await UserService.restorePassword(uid, password, token);
 
     if (!result) {
       CustomError.createError({

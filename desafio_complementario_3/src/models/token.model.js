@@ -13,8 +13,12 @@ const tokenSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 3600000,
   },
+  expireAt: {
+    type: Date,
+    default: new Date(),
+    expires: 3600,
+}
 });
 
 const tokenModel = model("Token", tokenSchema);

@@ -14,7 +14,7 @@ import initializePassport from "./config/passport.config.js";
 import sessionRouter from "./users/routes/sessions.routes.js";
 import productsMockRouter from "./mocks/routes/productsMock.routes.js";
 import loggerRouter from "./logger/routes/logger.router.js";
-import userPremiumRouter from "./users/routes/premium.routes.js"
+import apiUserRouter from "./users/routes/apiUser.routes.js"
 import MongoConnection from "./mongo.js";
 import { Server } from "socket.io";
 import socket from "./socket.js";
@@ -52,7 +52,7 @@ app.use(addLogger);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/sessions", sessionRouter);
-app.use("/api/users/premium", userPremiumRouter)
+app.use("/api/users", apiUserRouter)
 app.use("/", userRouter);
 app.use("/", viewsRouter);
 app.use("/chat", chatRouter);

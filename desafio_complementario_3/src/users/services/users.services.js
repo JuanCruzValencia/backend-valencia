@@ -103,7 +103,7 @@ class UserServices {
 
   changeRole = async (uid) => {
     try {
-      const user = await userModel.findById({ _id: uid }).lean().exec();
+      const user = await this.findUserById(uid);
 
       if (!user) {
         CustomError.createError({
@@ -111,7 +111,9 @@ class UserServices {
         });
       }
 
-      const result = userModel.updateOne(
+      console.log(user);
+
+      const result = await userModel.updateOne(
         { _id: uid },
         { role: user.role === "USER" ? "PREMIUM" : "USER" }
       );
@@ -153,16 +155,28 @@ class UserServices {
     }
   };
 
-  restorePassword = async (email, password) => {
+  restorePassword = async (uid, password, token) => {
     try {
-      const user = await this.findUser(email);
-
-      console.log(email);
+      const user = await this.findUserById(uid);
 
       if (!user) {
         CustomError.createError({
           message: ERRORS_ENUM["USER NOT FOUND"],
         });
+
+        return;
+      }
+
+      const userToken = await this.findUserToken(token``);
+
+      console.log(userToken);
+
+      if (!userToken) {
+        CustomError.createError({
+          message: "Invalid or expired token",
+        });
+
+        return;
       }
 
       const verifyPassword = await userModel.comparePassword(
@@ -172,12 +186,14 @@ class UserServices {
 
       if (verifyPassword) {
         CustomError.createError({
-          message: "Can not use the last password, must bne a new one",
+          message: "Can not use the last password, must be a new one",
         });
+
+        return;
       }
 
       const result = await userModel.updateOne(
-        { _id: user._id },
+        { _id: uid },
         { password: await userModel.encryptPassword(password) }
       );
 
@@ -185,7 +201,41 @@ class UserServices {
         return false;
       }
 
+      await userToken.delete();
+
       return true;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  findUserById = async (uid) => {
+    try {
+      const user = await userModel.findById({ _id: uid }).lean().exec();
+
+      if (!user) {
+        CustomError.createError({
+          message: ERRORS_ENUM["USER NOT FOUND"],
+        });
+      }
+
+      return user;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  findUserToken = async (uid, token) => {
+    try {
+      const userToken = await tokenModel.findOne({ userId: uid });
+
+      if (!userToken) {
+        CustomError.createError({
+          message: "Invalid or expired token",
+        });
+      }
+
+      return userToken;
     } catch (error) {
       console.log(error);
     }

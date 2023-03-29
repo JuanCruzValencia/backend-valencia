@@ -38,6 +38,6 @@ Router.post("/restore", postRestore);
 
 Router.get("/restoreForm/:uid/:token", getRestoreForm);
 
-Router.post("/restoreForm", postRestoreForm);
+Router.post("/restoreForm/:uid/:token", postRestoreForm);
 
 export default Router;
