@@ -17,9 +17,9 @@ class MailManager {
   send = async (user, subject, text) => {
     const result = await this.transport.sendMail({
       from: process.env.NODE_APP_EMAIL,
-      to: user.email,
+      to: user,
       subject,
-      text: text,
+      text,
     });
 
     return result;

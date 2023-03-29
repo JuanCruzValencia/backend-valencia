@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { generateCode } from "../utils";
+import { generateCode } from "../utils.js";
 
 const ticketSchema = new Schema({
   id: Schema.Types.ObjectId,

@@ -81,9 +81,7 @@ export const postRestore = async (req, res) => {
     const result = await UserService.sendRestoreMail(email);
 
     if (!result) {
-      CustomError.createError({
-        message: ERRORS_ENUM["USER NOT FOUND"],
-      });
+      return res.render("error", { error: "Email Not Found" });
     }
 
     res.status(200).redirect("login");
