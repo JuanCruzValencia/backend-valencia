@@ -44,7 +44,7 @@ class CartsServices {
     }
   };
 
-  addProductToCart = async (cid, pid, role) => {
+  addProductToCart = async (cid, pid, user) => {
     try {
       const cart = await this.getCartById(cid);
 
@@ -54,8 +54,9 @@ class CartsServices {
 
       if (!product) throw new Error("Product Not Found");
 
-      if (product.owner === "PREMIUM" && role === "PREMIUM")
-        throw new Error("Not Authorized");
+      if (product.owner === user._id) {
+        throw new Error("Cant add to cart a product that you already own");
+      }
 
       const findProduct = await cartsModel.findOne({ "carts.product": pid });
 
