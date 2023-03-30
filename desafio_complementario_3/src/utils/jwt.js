@@ -24,8 +24,9 @@ export const authToken = (req, res, next) => {
 
   jwt.verify(authCookie, process.env.JWT_SECRET, (error, credentials) => {
     if (error) {
+      console.log(error);
       return res.status(403).send({
-        error: "Not Authorized",
+        error: "Not Authorized from JWT",
       });
     }
 
@@ -76,10 +77,11 @@ export const authPolicies = (policieOne, policieTwo) => (req, res, next) => {
     policieTwo = null;
   }
 
-  if (role !== policieOne)
+  if (role !== policieOne && role !== policieTwo) {
     return res.status(403).send({
-      error: "Not Authorized",
+      error: "Not Authorized from Policies",
     });
+  }
 
   next();
 };

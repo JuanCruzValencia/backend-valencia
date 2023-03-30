@@ -20,7 +20,7 @@ Router.get("/:pid", getProductByIdCtr);
 Router.post(
   "/",
   authToken,
-  authPolicies("ADMIN" || "PREMIUM"),
+  authPolicies("ADMIN", "PREMIUM"),
   addNewProductCtr
 );
 
@@ -31,7 +31,7 @@ Router.put("/:pid", authToken, authPolicies("ADMIN"), updateProductCtr);
 Router.delete(
   "/:pid",
   authToken,
-  authPolicies("ADMIN" || "PREMIUM"),
+  authPolicies("ADMIN", "PREMIUM"),
   deleteProductCtr
 );
 

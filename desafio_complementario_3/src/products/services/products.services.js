@@ -86,11 +86,13 @@ class ProductsServices {
     }
   };
 
-  deleteProduct = async (pid, role) => {
+  deleteProduct = async (pid, user) => {
     try {
       const product = await this.getProductById(pid);
 
-      if (role !== "ADMIN" || product.owner !== role) {
+      //TODO el owner dentro del prodcuto se guarda como un objeto
+
+      if (product.owner !== "ADMIN" && product.owner != user._id) {
         throw new Error("Not Authorized");
       }
 
