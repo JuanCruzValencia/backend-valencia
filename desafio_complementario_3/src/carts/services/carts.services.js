@@ -1,3 +1,4 @@
+import CustomError from "../../errors/customError.js";
 import cartsModel from "../../models/carts.model.js";
 import { productsModel } from "../../models/products.model.js";
 import ticketModel from "../../models/ticket.model.js";
@@ -50,12 +51,15 @@ class CartsServices {
 
       if (!cart) throw new Error("Cart Not Found");
 
-      const product = await productsModel.findById({ _pid: pid }).lean().exec();
+      const product = await productsModel.findById({ _id: pid }).lean().exec();
 
       if (!product) throw new Error("Product Not Found");
 
-      if (product.owner === user._id) {
-        throw new Error("Cant add to cart a product that you already own");
+      if (product.owner == user._id) {
+        CustomError.createError({
+          name: "Failed to add product to cart",
+          message: "Cant add to cart a product that you already own",
+        });
       }
 
       const findProduct = await cartsModel.findOne({ "carts.product": pid });

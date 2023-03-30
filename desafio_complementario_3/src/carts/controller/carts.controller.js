@@ -61,13 +61,13 @@ export const getCartById = async (req, res) => {
 export const addProductToCart = async (req, res) => {
   try {
     const { cid, pid } = req.params;
-    const user = req.session.user
+    const user = req.session.user;
 
     const result = await CartServices.addProductToCart(cid, pid, user);
 
     if (!result) {
       CustomError.createError({
-        message: ERRORS_ENUM["INVALID CART PROPERTY"],
+        message: "Failed to add producto to cart",
       });
     }
 
@@ -77,7 +77,9 @@ export const addProductToCart = async (req, res) => {
   } catch (error) {
     req.logger.error(error);
 
-    res.status(400).send({ status: error.name, message: error.message });
+    res.render("error", {
+      error: error.message,
+    });
   }
 };
 

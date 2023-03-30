@@ -10,7 +10,9 @@ export const getRegister = (req, res) => {
   } catch (error) {
     req.logger.error(error);
 
-    res.render("error");
+    res.render("error", {
+      error: error.message,
+    });
   }
 };
 
@@ -20,7 +22,9 @@ export const getLogin = (req, res) => {
   } catch (error) {
     req.logger.error(error);
 
-    res.render("error");
+    res.render("error", {
+      error: error.message,
+    });
   }
 };
 
@@ -60,7 +64,9 @@ export const getCurrentUser = (req, res) => {
   } catch (error) {
     req.logger.error(error);
 
-    res.render("error");
+    res.render("error", {
+      error: error.message,
+    });
   }
 };
 
@@ -80,7 +86,9 @@ export const getAllUsers = async (req, res) => {
   } catch (error) {
     req.logger.error(error);
 
-    res.render("error");
+    res.render("error", {
+      error: error.message,
+    });
   }
 };
 
@@ -90,7 +98,9 @@ export const getRestore = (req, res) => {
   } catch (error) {
     req.logger.error(error);
 
-    res.render("error");
+    res.render("error", {
+      error: error.message,
+    });
   }
 };
 
@@ -108,7 +118,9 @@ export const postRestore = async (req, res) => {
   } catch (error) {
     req.logger.error(error);
 
-    res.render("error");
+    res.render("error", {
+      error: error.message,
+    });
   }
 };
 
@@ -128,7 +140,19 @@ export const getRestoreForm = async (req, res) => {
 
     const userToken = await UserService.findUserToken(uid, token);
 
-    res.render("restoreForm");
+    if (!userToken) {
+      CustomError.createError({
+        message: "Invalid or expired token",
+      });
+
+      return res.redirect("restore");
+    }
+
+    res.render("restoreForm", {
+      style: "styles.css",
+      uid,
+      token,
+    });
   } catch (error) {
     req.logger.error(error);
 
@@ -153,7 +177,9 @@ export const postRestoreForm = async (req, res) => {
   } catch (error) {
     req.logger.error(error);
 
-    res.render("error");
+    res.render("error", {
+      error: error.message,
+    });
   }
 };
 
@@ -175,6 +201,8 @@ export const changeUserRole = async (req, res) => {
   } catch (error) {
     req.logger.error(error);
 
-    res.render("error");
+    res.render("error", {
+      error: error.message,
+    });
   }
 };

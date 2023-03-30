@@ -167,9 +167,7 @@ class UserServices {
         return;
       }
 
-      const userToken = await this.findUserToken(token``);
-
-      console.log(userToken);
+      const userToken = await this.findUserToken(uid);
 
       if (!userToken) {
         CustomError.createError({
@@ -228,12 +226,6 @@ class UserServices {
   findUserToken = async (uid, token) => {
     try {
       const userToken = await tokenModel.findOne({ userId: uid });
-
-      if (!userToken) {
-        CustomError.createError({
-          message: "Invalid or expired token",
-        });
-      }
 
       return userToken;
     } catch (error) {
