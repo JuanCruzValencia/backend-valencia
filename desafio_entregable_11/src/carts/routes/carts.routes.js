@@ -20,7 +20,7 @@ Router.get("/", getCarts);
 
 Router.get("/:cid", getCartById);
 
-Router.post("/cid", addArrayOfProducts);
+Router.post("/:cid", addArrayOfProducts);
 
 Router.delete("/:cid", emptyCart);
 

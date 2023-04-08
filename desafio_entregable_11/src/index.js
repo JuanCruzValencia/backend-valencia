@@ -14,12 +14,14 @@ import initializePassport from "./config/passport.config.js";
 import sessionRouter from "./users/routes/sessions.routes.js";
 import productsMockRouter from "./mocks/routes/productsMock.routes.js";
 import loggerRouter from "./logger/routes/logger.router.js";
-import apiUserRouter from "./users/routes/apiUser.routes.js"
+import apiUserRouter from "./users/routes/apiUser.routes.js";
 import MongoConnection from "./mongo.js";
 import { Server } from "socket.io";
 import socket from "./socket.js";
 import { errorHandler } from "./middlewares/errors/index.js";
 import { addLogger } from "./utils/logger.js";
+import initSwagger from "./swagger.js";
+import swaggerUiExpress from "swagger-ui-express";
 
 //const and env variables
 dotenv.config();
@@ -47,12 +49,17 @@ app.use(express.static(__dirname + "/public"));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(errorHandler);
 app.use(addLogger);
+app.use(
+  "/api/docs",
+  swaggerUiExpress.serve,
+  swaggerUiExpress.setup(initSwagger())
+);
 
 //routers
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/sessions", sessionRouter);
-app.use("/api/users", apiUserRouter)
+app.use("/api/users", apiUserRouter);
 app.use("/", userRouter);
 app.use("/", viewsRouter);
 app.use("/chat", chatRouter);
