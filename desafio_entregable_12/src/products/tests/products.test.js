@@ -6,24 +6,44 @@ dotenv.config();
 const expect = chai.expect;
 const requester = supertest(process.env.BASE_URL);
 
-describe("Testing /api/products", () => {
-  describe("/GET", () => {
-    it("Get in /api/products should return an array", async () => {
+describe("Testing products endpoint", () => {
+  describe("/api/products", () => {
+    it("Get should return an status 200", async () => {
+      const { status } = await requester.get("/api/products");
+
+      expect(status).to.exist.and.to.be.equal(200);
+    });
+
+    it("Get should return an array", async () => {
       const { _body } = await requester.get("/api/products");
 
       expect(_body.payload).to.be.an("array").that.is.not.empty;
     });
+  });
 
-    it("The array must include object", async () => {
-      const { _body } = await requester.get("/api/products");
+  describe("/api/products/pid", () => {
+    it("GET should return status 200 if pid is defined", async () => {
+      const { status } = await requester.get("/api/products/");
 
-      expect(_body.payload[0]).to.be.an("object");
+      expect(status).to.exist.and.to.be.equal(200);
     });
 
-    it("The object must have property _id", async () => {
+    it("GET payload should return an object is pid is defined", async () => {
       const { _body } = await requester.get("/api/products");
 
-      expect(_body.payload[0]).to.haveOwnProperty("_id");
+      expect(_body.payload).to.exist.and.to.be.an("object");
+    });
+
+    it("GET payload obect must have property _id", async () => {
+      const { _body } = await requester.get("/api/products");
+
+      expect(_body).to.haveOwnProperty("_id");
+    });
+
+    it("GET should return status 400 if pid is not defined", async () => {
+      const { status } = await requester.get("/api/products/");
+
+      expect(status).to.exist.and.to.be.equal(400);
     });
   });
 });
