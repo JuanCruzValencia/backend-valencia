@@ -77,6 +77,9 @@ export const addNewProductCtr = async (req, res) => {
       });
     }
 
+    console.log(newProduct);
+    console.log(user);
+
     const result = await ProductsService.addNewProduct(newProduct, user);
 
     if (!result) {

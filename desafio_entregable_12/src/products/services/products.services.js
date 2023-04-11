@@ -58,7 +58,7 @@ class ProductsServices {
 
       const addProduct = await productsModel.create({
         ...newProduct,
-        owner: user._id,
+        owner: user ? user._id : "ADMIN",
       });
 
       return addProduct;

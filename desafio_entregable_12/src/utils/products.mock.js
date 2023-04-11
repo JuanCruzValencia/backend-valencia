@@ -15,3 +15,15 @@ export const generateProducts = () => {
     thumbnails: [faker.image.imageUrl()],
   };
 };
+
+export const genFakerProduct = () => {
+  return {
+    title: faker.commerce.productName(),
+    description: faker.commerce.productDescription(),
+    code: faker.random.alphaNumeric(6),
+    price: faker.commerce.price(),
+    stock: faker.random.numeric(1),
+    category: faker.commerce.department(),
+    thumbnails: [faker.image.imageUrl()],
+  };
+};

@@ -1,15 +1,14 @@
 import supertest from "supertest";
 import chai from "chai";
 import dotenv from "dotenv";
+import { genFakerProduct } from "../../utils/products.mock.js";
 dotenv.config();
 
 const expect = chai.expect;
 const requester = supertest(process.env.BASE_URL);
 
 describe("Testing products endpoint", () => {
-  describe("/api/products", () => {
-    const newProduct = {};
-
+  describe("GET/api/products", () => {
     it("GET should return status 200", async () => {
       const { status } = await requester.get("/api/products");
 
@@ -21,27 +20,57 @@ describe("Testing products endpoint", () => {
 
       expect(_body.payload).to.be.an("array").that.is.not.empty;
     });
+  });
 
-    it("POST a new product should return status 200 if all required properties was sended", async () => {
-      const { status } = requester.post("/api/products").send(newProduct);
+  describe("POST/api/products", () => {
+    const userAccount = {
+      email: "jcvalencia@ismt.edu.ar",
+      password: "qweqwe",
+    };
+    const newProductWithoutProperties = {
+      title: "Product one",
+    };
+    let cookieName, cookieToken, newProduct;
 
-      expect(status).to.exist.and.to.be.equal(200);
+    beforeEach(async () => {
+      const logUser = await requester.post("/login").send(userAccount);
+
+      const cookie = logUser.header["set-cookie"][0];
+
+      cookieName = cookie.split("=")[0];
+      cookieToken = cookie.split("=")[1];
+      newProduct = genFakerProduct();
+    });
+
+    it("POST a new product should return status 201 if all required properties was sended", async () => {
+      const { status } = await requester
+        .post("/api/products")
+        .set("Cookie", [`${cookieName}=${cookieToken}`])
+        .send(newProduct);
+
+      expect(status).to.exist.and.to.be.equal(201);
     });
 
     it("POST a new product should return status 400 if any of the required properties was undefined", async () => {
-      const { status } = requester.post("/api/products").send(newProduct);
+      const { status } = await requester
+        .post("/api/products")
+        .set("Cookie", [`${cookieName}=${cookieToken}`])
+        .send(newProductWithoutProperties);
 
-      expect(status).to.exist.and.to.be.equal(200);
+      expect(status).to.exist.and.to.be.equal(400);
     });
 
     it("POST must save the product in DB with a new _id property", async () => {
-      const { status } = requester.post("/api/products").send(newProduct);
+      const { _body } = await requester
+        .post("/api/products")
+        .set("Cookie", [`${cookieName}=${cookieToken}`])
+        .send(newProduct);
 
-      expect(status).to.exist.and.to.be.equal(200);
+      expect(_body.payload).to.exist.and.to.haveOwnProperty("_id");
     });
   });
 
-  describe("/api/products/pid", () => {
+  describe("GET/api/products/pid", () => {
     const pid = "63bf146e58e7baa835ee6870";
 
     it("GET should return status 200 if pid is defined", async () => {
