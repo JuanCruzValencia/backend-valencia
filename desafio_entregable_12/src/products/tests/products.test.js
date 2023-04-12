@@ -1,7 +1,10 @@
 import supertest from "supertest";
 import chai from "chai";
 import dotenv from "dotenv";
-import { genFakerProduct } from "../../utils/products.mock.js";
+import {
+  genFakerProduct,
+  fakerUpdateProduct,
+} from "../../utils/products.mock.js";
 dotenv.config();
 
 const expect = chai.expect;
@@ -70,7 +73,7 @@ describe("Testing products endpoint", () => {
     });
   });
 
-  describe("GET/api/products/pid", () => {
+  describe("GET/api/products/:pid", () => {
     const pid = "63bf146e58e7baa835ee6870";
 
     it("GET should return status 200 if pid is defined", async () => {
@@ -93,6 +96,92 @@ describe("Testing products endpoint", () => {
 
     it("GET should return status 400 if pid is not defined", async () => {
       const { status } = await requester.get(`/api/products/123456`);
+
+      expect(status).to.exist.and.to.be.equal(400);
+    });
+  });
+
+  describe("PUT/api/products/:pid", () => {
+    const userAccount = {
+      email: "jcvalencia@ismt.edu.ar",
+      password: "qweqwe",
+    };
+    let cookieName, cookieToken, pid;
+    const productUpdated = fakerUpdateProduct();
+
+    beforeEach(async () => {
+      const logUser = await requester.post("/login").send(userAccount);
+
+      const cookie = logUser.header["set-cookie"][0];
+
+      cookieName = cookie.split("=")[0];
+      cookieToken = cookie.split("=")[1];
+
+      const newProduct = genFakerProduct();
+      const { _body } = await requester
+        .post("/api/products")
+        .set("Cookie", [`${cookieName}=${cookieToken}`])
+        .send(newProduct);
+
+      pid = _body.payload._id;
+    });
+
+    it("PUT should return status 200 if the product was updated", async () => {
+      const { status, _body } = await requester
+        .put(`/api/products/${pid}`)
+        .set("Cookie", [`${cookieName}=${cookieToken}`])
+        .send(productUpdated);
+
+      console.log(_body.payload);
+
+      expect(status).to.exist.and.to.be.equal(200);
+    });
+
+    it("PUT should return status 403 if the products wasnt founded", async () => {
+      const { status } = await requester
+        .put(`/api/products/123456`)
+        .set("Cookie", [`${cookieName}=${cookieToken}`]);
+
+      expect(status).to.exist.and.to.be.equal(403);
+    });
+  });
+
+  describe("DELETE/api/products/:pid", () => {
+    const userAccount = {
+      email: "jcvalencia@ismt.edu.ar",
+      password: "qweqwe",
+    };
+    let cookieName, cookieToken, pid;
+
+    beforeEach(async () => {
+      const logUser = await requester.post("/login").send(userAccount);
+
+      const cookie = logUser.header["set-cookie"][0];
+
+      cookieName = cookie.split("=")[0];
+      cookieToken = cookie.split("=")[1];
+
+      const newProduct = genFakerProduct();
+      const { _body } = await requester
+        .post("/api/products")
+        .set("Cookie", [`${cookieName}=${cookieToken}`])
+        .send(newProduct);
+
+      pid = _body.payload._id;
+    });
+
+    it("DELETE should return status 202 if the product was deleted", async () => {
+      const { status } = await requester
+        .delete(`/api/products/${pid}`)
+        .set("Cookie", [`${cookieName}=${cookieToken}`]);
+
+      expect(status).to.exist.and.to.be.equal(202);
+    });
+
+    it("DELETE should return status 400 if the products wasnt founded", async () => {
+      const { status } = await requester
+        .delete(`/api/products/123456`)
+        .set("Cookie", [`${cookieName}=${cookieToken}`]);
 
       expect(status).to.exist.and.to.be.equal(400);
     });

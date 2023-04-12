@@ -27,3 +27,9 @@ export const genFakerProduct = () => {
     thumbnails: [faker.image.imageUrl()],
   };
 };
+
+export const fakerUpdateProduct = () => {
+  return {
+    price: faker.commerce.price(),
+  };
+};

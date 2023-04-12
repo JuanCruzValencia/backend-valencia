@@ -91,13 +91,12 @@ class ProductsServices {
       const product = await this.getProductById(pid);
 
       //TODO el owner dentro del prodcuto se guarda como un objeto
+      if (!product) {
+        throw new Error("Product Not Found");
+      }
 
       if (product.owner !== "ADMIN" && product.owner != user._id) {
         throw new Error("Not Authorized");
-      }
-
-      if (!product) {
-        throw new Error("Product Not Found");
       }
 
       const deleteProduct = await productsModel.deleteOne({ _id: pid });
