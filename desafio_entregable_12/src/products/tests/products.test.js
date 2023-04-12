@@ -137,12 +137,12 @@ describe("Testing products endpoint", () => {
       expect(status).to.exist.and.to.be.equal(200);
     });
 
-    it("PUT should return status 403 if the products wasnt founded", async () => {
+    it("PUT should return status 400 if the products wasnt founded", async () => {
       const { status } = await requester
         .put(`/api/products/123456`)
         .set("Cookie", [`${cookieName}=${cookieToken}`]);
 
-      expect(status).to.exist.and.to.be.equal(403);
+      expect(status).to.exist.and.to.be.equal(400);
     });
   });
 
