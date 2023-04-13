@@ -66,4 +66,46 @@ describe("Testing auth and user endpoints", () => {
       expect(status).to.exist.and.to.be.equal(400);
     });
   });
+
+  describe("GET/current must return status 200 and a user with _id, email, cart properties", () => {
+    const userAccount = {
+      email: "jcvalencia@ismt.edu.ar",
+      password: "qweqwe",
+    };
+
+    let cookieName, cookieToken;
+
+    beforeEach(async () => {
+      const logUser = await requester.post("/login").send(userAccount);
+      const cookie = logUser.header["set-cookie"][0];
+
+      cookieName = cookie.split("=")[0];
+      cookieToken = cookie.split("=")[1];
+    });
+    it("GET should return status 200", async () => {
+      const { status } = await requester
+        .get("/api/sessions/current")
+        .set("Cookie", [`${cookieName}=${cookieToken}`]);
+
+      expect(status).to.exist.and.to.be.equal(200);
+    });
+
+    it("GET should return an user", async () => {
+      const { _body } = await requester
+        .get("/api/sessions/current")
+        .set("Cookie", [`${cookieName}=${cookieToken}`]);
+
+      expect(_body.payload).to.exist.and.to.be.an("object");
+    });
+
+    it("GET user must have _id, email and cart properties", async () => {
+      const { _body } = await requester
+        .get("/api/sessions/current")
+        .set("Cookie", [`${cookieName}=${cookieToken}`]);
+
+      expect(_body.payload).to.exist.and.to.haveOwnProperty("_id");
+      expect(_body.payload).to.exist.and.to.haveOwnProperty("email");
+      expect(_body.payload).to.exist.and.to.haveOwnProperty("cart");
+    });
+  });
 });
