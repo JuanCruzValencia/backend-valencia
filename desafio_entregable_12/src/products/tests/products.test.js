@@ -25,7 +25,7 @@ describe("Testing products endpoint", () => {
     });
   });
 
-  describe("POST/api/products", () => {
+  describe("POST/api/products", async () => {
     const userAccount = {
       email: "jcvalencia@ismt.edu.ar",
       password: "qweqwe",
@@ -35,15 +35,13 @@ describe("Testing products endpoint", () => {
     };
     let cookieName, cookieToken, newProduct;
 
-    beforeEach(async () => {
-      const logUser = await requester.post("/login").send(userAccount);
+    const logUser = await requester.post("/login").send(userAccount);
 
-      const cookie = logUser.header["set-cookie"][0];
+    const cookie = logUser.header["set-cookie"][0];
 
-      cookieName = cookie.split("=")[0];
-      cookieToken = cookie.split("=")[1];
-      newProduct = genFakerProduct();
-    });
+    cookieName = cookie.split("=")[0];
+    cookieToken = cookie.split("=")[1];
+    newProduct = genFakerProduct();
 
     it("POST a new product should return status 201 if all required properties was sended", async () => {
       const { status } = await requester
@@ -101,7 +99,7 @@ describe("Testing products endpoint", () => {
     });
   });
 
-  describe("PUT/api/products/:pid", () => {
+  describe("PUT/api/products/:pid", async () => {
     const userAccount = {
       email: "jcvalencia@ismt.edu.ar",
       password: "qweqwe",
@@ -109,22 +107,20 @@ describe("Testing products endpoint", () => {
     let cookieName, cookieToken, pid;
     const productUpdated = fakerUpdateProduct();
 
-    beforeEach(async () => {
-      const logUser = await requester.post("/login").send(userAccount);
+    const logUser = await requester.post("/login").send(userAccount);
 
-      const cookie = logUser.header["set-cookie"][0];
+    const cookie = logUser.header["set-cookie"][0];
 
-      cookieName = cookie.split("=")[0];
-      cookieToken = cookie.split("=")[1];
+    cookieName = cookie.split("=")[0];
+    cookieToken = cookie.split("=")[1];
 
-      const newProduct = genFakerProduct();
-      const { _body } = await requester
-        .post("/api/products")
-        .set("Cookie", [`${cookieName}=${cookieToken}`])
-        .send(newProduct);
+    const newProduct = genFakerProduct();
+    const { _body } = await requester
+      .post("/api/products")
+      .set("Cookie", [`${cookieName}=${cookieToken}`])
+      .send(newProduct);
 
-      pid = _body.payload._id;
-    });
+    pid = _body.payload._id;
 
     it("PUT should return status 200 if the product was updated", async () => {
       const { status, _body } = await requester
@@ -146,29 +142,27 @@ describe("Testing products endpoint", () => {
     });
   });
 
-  describe("DELETE/api/products/:pid", () => {
+  describe("DELETE/api/products/:pid", async () => {
     const userAccount = {
       email: "jcvalencia@ismt.edu.ar",
       password: "qweqwe",
     };
     let cookieName, cookieToken, pid;
 
-    beforeEach(async () => {
-      const logUser = await requester.post("/login").send(userAccount);
+    const logUser = await requester.post("/login").send(userAccount);
 
-      const cookie = logUser.header["set-cookie"][0];
+    const cookie = logUser.header["set-cookie"][0];
 
-      cookieName = cookie.split("=")[0];
-      cookieToken = cookie.split("=")[1];
+    cookieName = cookie.split("=")[0];
+    cookieToken = cookie.split("=")[1];
 
-      const newProduct = genFakerProduct();
-      const { _body } = await requester
-        .post("/api/products")
-        .set("Cookie", [`${cookieName}=${cookieToken}`])
-        .send(newProduct);
+    const newProduct = genFakerProduct();
+    const { _body } = await requester
+      .post("/api/products")
+      .set("Cookie", [`${cookieName}=${cookieToken}`])
+      .send(newProduct);
 
-      pid = _body.payload._id;
-    });
+    pid = _body.payload._id;
 
     it("DELETE should return status 202 if the product was deleted", async () => {
       const { status } = await requester
