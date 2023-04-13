@@ -53,7 +53,10 @@ export const postLogin = (req, res) => {
 
   req.session.user = req.user;
 
-  res.cookie(process.env.COOKIE_NAME, req.user.token).redirect("/products");
+  res
+    .status(200)
+    .cookie(process.env.COOKIE_NAME, req.user.token)
+    .redirect("/products");
 };
 
 export const getCurrentUser = (req, res) => {

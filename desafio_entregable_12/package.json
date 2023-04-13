@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "test": "mocha src/products/tests/products.test.js",
+    "test-products": "mocha src/products/tests/products.test.js",
+    "test-users": "mocha src/users/tests/user.test.js",
+    "test-carts": "mocha src/carts/tests/cart.test.js",
     "artillery-dev": "",
     "artillery-prod": ""
   },

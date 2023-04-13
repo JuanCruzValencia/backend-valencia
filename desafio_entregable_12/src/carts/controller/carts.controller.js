@@ -4,10 +4,11 @@ import { CartServices } from "../services/carts.services.js";
 
 export const createCart = async (req, res) => {
   try {
-    await CartServices.createCart();
+    const cart = await CartServices.createCart();
 
     res.status(200).send({
       message: "Cart created",
+      payload: cart,
     });
   } catch (error) {
     req.logger.error(error);
@@ -113,13 +114,15 @@ export const addArrayOfProducts = async (req, res) => {
 
     const result = await CartServices.addArrayOfProducts(cid, arrayOfProducts);
 
+    if (!result.modifiedCount) return res.status(400);
+
     res.status(200).send({
       payload: result,
     });
   } catch (error) {
     req.logger.error(error);
 
-    res.status(400).send({ status: error.name, message: error.message });
+    return res.status(400).send({ status: error.name, message: error.message });
   }
 };
 
@@ -151,13 +154,17 @@ export const emptyCart = async (req, res) => {
 
     const result = await CartServices.deleteAllProducts(cid);
 
+    console.log(result);
+
+    if (!result.modifiedCount) return res.status(400);
+
     res.status(200).send({
       payload: result,
     });
   } catch (error) {
     req.logger.error(error);
 
-    res.status(400).send({ status: error.name, message: error.message });
+    return res.status(400).send({ status: error.name, message: error.message });
   }
 };
 

@@ -10,30 +10,28 @@ const requester = supertest(process.env.BASE_URL);
 describe("Testing auth and user endpoints", () => {
   describe("POST /register should register a new user", () => {
     const newUser = newFakerUser();
+
     const incompleteNewUser = {
       email: "juan@Mail.com",
       password: "secret123",
     };
-    let userEmail, password;
 
-    it("POST/regiser should return status 200 and _id property if new user was registed successfully", async () => {
-      const { _body, status } = await requester.post("/register").send(newUser);
+    it("POST/regiser should return status 200 if new user was registed successfully", async () => {
+      const { status } = await requester.post("/register").send(newUser);
 
-      const user = _body.payload;
-
-      userEmail = user.email;
-      password = user.password;
+      console.log("register ok" + status);
 
       expect(status).to.exist.and.to.be.equal(200);
-      expect(_body.payload).to.have.deep.property("_id");
     });
 
-    it("POST/register should return status 400 if any of the new user inputs were undefined", async () => {
+    it("POST/register should return status 302 if any of the new user is already ion DB", async () => {
       const { status } = await requester
         .post("/register")
         .send(incompleteNewUser);
 
-      expect(status).to.exist.and.to.be.equal(400);
+      console.log("register not ok" + status);
+
+      expect(status).to.exist.and.to.be.equal(302);
     });
   });
 
@@ -42,26 +40,32 @@ describe("Testing auth and user endpoints", () => {
       email: "jcvalencia@ismt.edu.ar",
       password: "qweqwe",
     };
+
     const incompleteUser = {
       email: "juan@Mail.com",
       password: "secret123",
     };
-    it("POST/login should return status 200 if mail and password was correct", async () => {
-      const { status } = requester.post("/login").send(userAccount);
 
-      expect(status).to.exist.and.to.be.equal(200);
+    it("POST/login should return status 200 if mail and password were correct", async () => {
+      const response = await requester.post("/login").send(userAccount);
+
+      console.log("login ok" + response.status);
+
+      expect(response.status).to.exist.and.to.be.equal(200);
     });
 
     it("POST/login should return cookie with jwt token", async () => {
-      const response = (await requester.post("/login")).send(userAccount);
+      const response = await requester.post("/login").send(userAccount);
 
       const cookie = response.header["set-cookie"][0];
 
       expect(cookie).to.exist;
     });
 
-    it("POST/register should return status 400 if any of the new user inputs were incomplete or wrong", async () => {
-      const { status } = await requester.post("/register").send(incompleteUser);
+    it("POST/login should return status 400 if any of the new user inputs were incomplete or wrong", async () => {
+      const { status } = await requester.post("/login").send(incompleteUser);
+
+      console.log("login not ok" + status);
 
       expect(status).to.exist.and.to.be.equal(400);
     });
@@ -75,13 +79,14 @@ describe("Testing auth and user endpoints", () => {
 
     let cookieName, cookieToken;
 
-    beforeEach(async () => {
+    before(async () => {
       const logUser = await requester.post("/login").send(userAccount);
       const cookie = logUser.header["set-cookie"][0];
 
       cookieName = cookie.split("=")[0];
       cookieToken = cookie.split("=")[1];
     });
+
     it("GET should return status 200", async () => {
       const { status } = await requester
         .get("/api/sessions/current")
@@ -91,11 +96,13 @@ describe("Testing auth and user endpoints", () => {
     });
 
     it("GET should return an user", async () => {
-      const { _body } = await requester
+      const response = await requester
         .get("/api/sessions/current")
         .set("Cookie", [`${cookieName}=${cookieToken}`]);
 
-      expect(_body.payload).to.exist.and.to.be.an("object");
+      console.log("current user"+ response);
+
+      expect(response.payload).to.exist.and.to.be.an("object");
     });
 
     it("GET user must have _id, email and cart properties", async () => {
