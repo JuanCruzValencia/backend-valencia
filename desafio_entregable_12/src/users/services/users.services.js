@@ -47,6 +47,16 @@ class UserServices {
         return done(null, false);
       }
 
+      if (
+        !req.body.first_name ||
+        !req.body.last_name ||
+        !req.body.email ||
+        !req.body.age ||
+        !password
+      ) {
+        return done(null, false);
+      }
+
       const newUser = {
         first_name: req.body.first_name,
         last_name: req.body.last_name,
@@ -73,7 +83,7 @@ class UserServices {
       if (!user) {
         console.log("User Not Found");
 
-        return done(null, user);
+        return done(null, false);
       }
 
       const verifyPassword = await userModel.comparePassword(

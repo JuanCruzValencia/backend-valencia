@@ -41,14 +41,17 @@ export const getLogout = async (req, res) => {
 };
 
 export const postRegister = (req, res) => {
-  res.status(200).redirect("/login");
+  //TODO register must redirect fron the front
+  if (!req.user) return res.status(400);
+
+  res.status(200).send({ paylaod: req.user });
 };
 
 export const postLogin = (req, res) => {
   if (!req.user) {
     req.logger.error("Invalid credentials");
 
-    return res.status(400).render("error", { error: "Invalid credentials" });
+    return res.status(400).send({ error: "Invalid credentials" });
   }
 
   req.session.user = req.user;
@@ -56,14 +59,15 @@ export const postLogin = (req, res) => {
   res
     .status(200)
     .cookie(process.env.COOKIE_NAME, req.user.token)
-    .redirect("/products");
+    .send({ payload: req.user });
 };
 
 export const getCurrentUser = (req, res) => {
   try {
-    const user = req.session.user;
+    const user = req.user;
 
-    res.status(200).render("session", { styles: "style.css", user });
+    //TODO redirect /current fron the fornt
+    res.status(200).send({ payload: user });
   } catch (error) {
     req.logger.error(error);
 

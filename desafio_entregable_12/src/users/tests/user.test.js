@@ -19,19 +19,15 @@ describe("Testing auth and user endpoints", () => {
     it("POST/regiser should return status 200 if new user was registed successfully", async () => {
       const { status } = await requester.post("/register").send(newUser);
 
-      console.log("register ok" + status);
-
       expect(status).to.exist.and.to.be.equal(200);
     });
 
-    it("POST/register should return status 302 if any of the new user is already ion DB", async () => {
+    it("POST/register should return status 401 Unauthorized if any of the new user is already ion DB", async () => {
       const { status } = await requester
         .post("/register")
         .send(incompleteNewUser);
 
-      console.log("register not ok" + status);
-
-      expect(status).to.exist.and.to.be.equal(302);
+      expect(status).to.exist.and.to.be.equal(401);
     });
   });
 
@@ -47,11 +43,9 @@ describe("Testing auth and user endpoints", () => {
     };
 
     it("POST/login should return status 200 if mail and password were correct", async () => {
-      const response = await requester.post("/login").send(userAccount);
+      const status = await requester.post("/login").send(userAccount);
 
-      console.log("login ok" + response.status);
-
-      expect(response.status).to.exist.and.to.be.equal(200);
+      expect(status).to.exist.and.to.be.equal(200);
     });
 
     it("POST/login should return cookie with jwt token", async () => {
@@ -62,12 +56,10 @@ describe("Testing auth and user endpoints", () => {
       expect(cookie).to.exist;
     });
 
-    it("POST/login should return status 400 if any of the new user inputs were incomplete or wrong", async () => {
+    it("POST/login should return status 401 Unauthorized if any of the new user inputs were incomplete or wrong", async () => {
       const { status } = await requester.post("/login").send(incompleteUser);
 
-      console.log("login not ok" + status);
-
-      expect(status).to.exist.and.to.be.equal(400);
+      expect(status).to.exist.and.to.be.equal(401);
     });
   });
 
@@ -96,13 +88,11 @@ describe("Testing auth and user endpoints", () => {
     });
 
     it("GET should return an user", async () => {
-      const response = await requester
+      const { _body } = await requester
         .get("/api/sessions/current")
         .set("Cookie", [`${cookieName}=${cookieToken}`]);
 
-      console.log("current user"+ response);
-
-      expect(response.payload).to.exist.and.to.be.an("object");
+      expect(_body.payload).to.exist.and.to.be.an("object");
     });
 
     it("GET user must have _id, email and cart properties", async () => {

@@ -20,13 +20,13 @@ Router.get("/login", getLogin);
 
 Router.post(
   "/register",
-  passport.authenticate("register", { failureRedirect: "/error" }),
+  passport.authenticate("register", { failureMessage: "not auth" }),
   postRegister
 );
 
 Router.post(
   "/login",
-  passport.authenticate("login", { failureRedirect: "/error" }),
+  passport.authenticate("login", { failureMessage: "not auth" }),
   postLogin
 );
 
